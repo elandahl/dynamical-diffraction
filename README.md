@@ -1,1 +1,1 @@
-# dynamical diffraction
+# dynamical diffraction using Wie algorithm
