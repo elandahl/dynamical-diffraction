@@ -94,4 +94,4 @@ else
   X_out = (s.*X_in + 1i*(B+C.*X_in).*tan(s.*(A - A01)))./(s - 1i*(C+B.*X_in).*tan(s.*(A - A01))); 
 end
 
-endfunction
+end

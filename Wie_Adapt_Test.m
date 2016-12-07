@@ -43,7 +43,7 @@ for nn = 1:n
       T(nn,mm)=10;
     else
       T(nn,mm)=0;
-    endif
+    end
   end
 end
 
@@ -120,8 +120,8 @@ angle1 = Si_strained(:,1); %i
 Intensity1 = Si_strained(:,2);
 p4=semilogy(angle1-dAngle, Intensity1,':k','LineWidth',4);
 p5=semilogy(theta*180/pi,X.*conj(X),'-b','LineWidth',1);
-xlabel("Theta (degrees)",'FontSize',14)
-ylabel("Diffracted intensity",'FontSize',14)
+xlabel('Theta (degrees)','FontSize',14)
+ylabel('Diffracted intensity','FontSize',14)
 AX=legend([p4 p5], 'strained GID-SL', 'strained');
 xlim([theta(end)*180/pi theta(1)*180/pi])
 ylim([1e-4 1.1])

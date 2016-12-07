@@ -69,7 +69,7 @@ if (length(warnings)~=0)
   fprintf('\n  Ending program and returning null values.\n')
   X = 0; err = 0; Steps = 0;
   return
-endif
+end
 
 %% Set the maximum depth to 5 times the extinction length
 gamma0 = sin(thetaB+phi); 
@@ -86,10 +86,10 @@ X0=X_in; % Save for later
 %% Adaptative stepping main loop
 i = 1; % iteration variable 
 while (zz>=0);
-  st = interp1(z, Strain, zz,"extrap");   % st is interpolation of Strain at zz
+  st = interp1(z, Strain, zz,'spline', 'extrap');   % st is interpolation of Strain at zz
   X_out = Wiestep (X_in, theta, zz, dz, st, params); % take a full step at once
   zz_half = zz + dz/2; % half step depth (deeper by a half step)
-  st_half = interp1(z, Strain, zz_half,"extrap"); % st_half is interpolation of Strain at zz_half
+  st_half = interp1(z, Strain, zz_half,'spline', 'extrap'); % st_half is interpolation of Strain at zz_half
   X_half = Wiestep (X_in, theta, zz_half, dz/2, st_half, params); % take a half step
   X_full = Wiestep (X_half, theta, zz, dz/2, st, params); % take a second half step
   intX_full = X_full.*conj(X_full); % intensity after two half steps
@@ -99,7 +99,7 @@ while (zz>=0);
     dz = dz*f; % increase dz
   elseif (errs>tol) && (dz>dz_min) % If the error is large then
     dz = dz/f; % shrink dz
-  endif  
+  end  
   st_save(i)=st(1);
   st_half_save(i)=st_half(1);
   zz_save(i)=zz;
@@ -123,11 +123,11 @@ while (zz>=0);
   i = i + 1; % increment up number of iterations
   %X_old = X_in;
   X_in = (X_out+X_full)/2; % The half- and full-step results are averaged and fed into the algorithim again to advance
-  endwhile
+end
 
 %% Return values
 X = X_in; %% return X_in
 err = max(err_save(1:i-1)); % return maximum error
 Steps = i-1; % return number of steps
 
-endfunction
+end
