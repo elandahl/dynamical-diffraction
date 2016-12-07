@@ -6,7 +6,7 @@
 % in a strained crystal up from the unstrained bulk
 % using Wie's algorithim in J. Appl. Phys. 59, 3743 (1986)
 % Written by Eric Landahl, 11/6/2016 
-% Last revised by EL, 11/7/2016
+% Last revised by EL 12/7/16 to make compatible with standard MATLAB syntax
 % For more details see help for Wiestep.m
 %
 % REQUIRES THESE FUNCTIONS:

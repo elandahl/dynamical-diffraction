@@ -3,6 +3,7 @@
 % Requires WieAdapt.m, Wiestep.m, StrainCheck.m, MFP.m
 % First written November 9, 2016 by Eric Landahl
 % Revised November 18, 2016 and used to benchmark against Sergey
+% Revised December 7, 2016 to make compatible with standard MATLAB syntax
 
 clear all;
 more off; % allows data output to continuously scroll during execution

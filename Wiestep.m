@@ -8,7 +8,7 @@
 % suggestion to vectorize angle thanks to Dohn Arms
 % Based on Wie.m by G. Jackson Williams 8/28/2009 and also his later cWie.c
 % Written by Eric Landahl, 11/1/2016 
-% Last revised by EL 11/7/2016
+% Last revised by EL 12/7/16 to make compatible with standard MATLAB syntax
 
 function [X_out] = Wiestep (X_in, theta, z, dz, strain, param)
 

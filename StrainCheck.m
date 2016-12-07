@@ -4,6 +4,7 @@
 % And fix any issues with the options (opts) array 
 % And taper the strain function to zero at 5*Lext
 % Written by Eric Landahl November 7, 2016
+% Last revised by EL 12/7/16 to make compatible with standard MATLAB syntax
 
 function [warnings Strain opts] = StrainCheck (Strain, z, theta, opts, params)
 
