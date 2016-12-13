@@ -23,9 +23,9 @@
 file=example.dat
 
 ### Energy range and the number of energy points
-E1=10		#start energy
-E2=12		#end energy
-n=3		#number of pts (please stay within a few dozen!)
+E1=8.8976		#start energy
+E2=12.398		#end energy
+n=2		#number of pts (please stay within a few dozen!)
 
 ### Energy step:
 dE=$(echo "($E2-$E1)/($n-1)" | bc -l)
