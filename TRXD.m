@@ -106,7 +106,7 @@ p_Hi = -abs(interp1(X0h(:,1), X0h(:,5), energy, 'spline', 'extrap'));
 delta = interp1(X0h(:,1), X0h(:,6), energy, 'spline', 'extrap');   
 tB_deg = interp1(X0h(:,1), X0h(:,7), energy, 'spline', 'extrap'); 
 thetaB= tB_deg*3.14159/180;  % Sergey Si, Bragg angle in radians
-lambda= energy*1.23984E-9; % convert energy in keV to wavelength in meters
+lambda= energy*1.23984E-11; % convert energy in keV to wavelength in meters
 
 % Assemble params arrray containing parameters for the crystal diffraction
 params(1) = p_0r + 1i*p_0i;
@@ -137,7 +137,7 @@ if time == 0
   time = 1e-8; % set default maximum time delay to 10 ns
 end
 if (length(time)==1) 
-  time = 0:time/num_times:time;
+  time = time/num_times:time/num_times:time;
 end
 
 %% Calculate angular array
@@ -151,20 +151,37 @@ end
 if strcmp(model,'thermal')
   % Load properties
   semi_data=csvread('Semiconductor_properties.csv');
-  C = semi_data(10,ID+3) % J/(g K)
-  alpha_T = semi_data(7,ID+3) % 1/K
-  kappa_T = semi_data(9,ID+3) % cm^2/s
-  %% Next: Insert simple Gaussian here
-  %% And then add MFP option
+  alpha_T = semi_data(7,ID+3); % 1/K
+  kappa_T = semi_data(9,ID+3); % cm^2/s
+  kappa_T = kappa_T / 10000; % convert from cm^2/s to m^2/s
+  % Calculate initial temperature rise
+  fluence = fluence*10; % Convert from mJ/cm^2 to J/m^2
+  t_film = 70e-9; % Film thickness in m
+  C_film = 904; %Specific heat of film in J/(kg K)
+  rho_film = 2712; % Film density in kg/m^3
+  T0 = fluence/(t_film * C_film * rho_film); % Initial temperature rise
+  fprintf('A %d nm thick Aluminum film gives a temperature rise of %.1f K\n',t_film*1e9,T0)
+  % Calculate teperature profile
+  sigma = sqrt(2*kappa_T*time); % Width of temperature pulse
+  dz = sigma(1); % Let depth step be the width at the first timepoint (FTCS Stability critereon)
+  z = dz:dz:5*Lext;
+  for m = 1:num_times % time loop
+    for n = 1:length(z) % depth loop
+      T(m,n) = dz*(T0/sigma(m))*(1/sqrt(2*pi))*exp(-(z(n)^2)/(2*sigma(m)^2));
+    end
+  end
+  strain = alpha_T*T; % Strain is given by thermal expansion coefficient times temperature
 else
   fprintf('Not a valid model\n')
   return
 end
 
+%%%%% 12/15/16: Next make "thermal" a separate function.  Then call WieAdapt.
+
 %% Eventually, a strain propogation algorithim (with remeshing) goes here
 
  %%%for testing
-A =1;
+A =strain;
 
 
 end
