@@ -4,7 +4,8 @@
 % And fix any issues with the options (opts) array 
 % And taper the strain function to zero at 5*Lext
 % Written by Eric Landahl November 7, 2016
-% Last revised by EL 12/7/16 to make compatible with standard MATLAB syntax
+% Revised by EL 12/7/16 to make compatible with standard MATLAB syntax
+% Further revised by EL 12/28/16 to use || instead of | short circuit operators
 
 function [warnings Strain opts] = StrainCheck (Strain, z, theta, opts, params)
 
@@ -53,7 +54,7 @@ f = opts(4);
 %  warnings = strcat(warnings, 'Psi are not complex.  ');
 %end
 
-if (thetaB <= 0 | thetaB >= pi/2) 
+if (thetaB <= 0 || thetaB >= pi/2) 
   warnings = strcat(warnings, 'The Bragg angle is out of range, or not in radians.  ');
 end
 
@@ -61,7 +62,7 @@ if (abs(delta) >= pi/180)
   warnings = strcat(warnings, 'Refractive shift angle delta is out of range or not in radians.  ');
 end
 
-if (lambda <= 1e-12 | lambda >= 1e-8) 
+if (lambda <= 1e-12 || lambda >= 1e-8) 
   warnings = strcat(warnings, 'Lambda is out of range or not in meters.  ');
 end
 
@@ -87,7 +88,7 @@ if (dz_min <= 1e-10)
   dz_min = 1e-10; 
   fprintf('Depth steps have been set to a default minimum of 1 Angstrom.  ');
 end
-if (dz_max <= 1e-10 | dz_max >= 1.1e-6 )
+if (dz_max <= 1e-10 || dz_max >= 1.1e-6 )
   dz_max = 1e-6; 
   fprintf('Depth steps have been set to a default maximum size of 10,000 Angstrom.  ');
 endif
@@ -99,10 +100,10 @@ if (f <= 0)
 end
 
 %% Check angle range
-if (min(theta) <= 0 | max(theta) >= pi) 
+if (min(theta) <= 0 || max(theta) >= pi) 
   warnings = strcat(warnings, 'The angle range is too large, or not in radians.  ');
 end
-if (min(theta) >= thetaB | max(theta) <= thetaB)
+if (min(theta) >= thetaB || max(theta) <= thetaB)
   warnigns = strcat(warnings, 'The Bragg angle does not fall within the range of angles.  ');
 end
 

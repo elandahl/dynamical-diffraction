@@ -2,12 +2,13 @@
 % Program to calculate Time-Resolved X-Ray Diffraction 
 % By Eric Landahl, DePaul University Physics Department, elandahl@depaul.edu
 % First written December 13, 2016
+% Last revised by EL 12.28.2016
 % Based on previous work by Sooheyong Lee (KRISS) and G. Jackson Williams (LLNL)
 %
 % INPUTS:
-%   model       strain model, selected from the following list:
-%     thermal   Gaussian solution to prompt surface temperature rise
-%   crystal     determines x-ray and strain properties, chosen from:
+%   model           strain model, selected from the following list:
+%     thermalFilm   Gaussian solution to prompt surface temperature rise
+%   crystal         determines x-ray and strain properties, chosen from:
 %     GaAs
 %     Si
 %     Ge
@@ -33,7 +34,7 @@
 %   angle       a vector of angles calculated, absolute, in degrees
 %
 % SAMPLE Usage:
-% [A time angle] = TRXD ('thermal', 'Si', [0 0 4], [0 0 1], 10, 1, 0, 0)
+% [A time angle] = TRXD ('thermalFilm', 'Si', [0 0 4], [0 0 1], 10, 1, 0, 0)
 
 
 function [A time angle] = TRXD (model, crystal, reflection, cut, energy, fluence, angle, time)
@@ -148,40 +149,24 @@ if (length(angle)==1)
   angle = (0:angle/num_angles:angle)-angle/2;
 end
 
-if strcmp(model,'thermal')
-  % Load properties
-  semi_data=csvread('Semiconductor_properties.csv');
-  alpha_T = semi_data(7,ID+3); % 1/K
-  kappa_T = semi_data(9,ID+3); % cm^2/s
-  kappa_T = kappa_T / 10000; % convert from cm^2/s to m^2/s
-  % Calculate initial temperature rise
-  fluence = fluence*10; % Convert from mJ/cm^2 to J/m^2
-  t_film = 70e-9; % Film thickness in m
-  C_film = 904; %Specific heat of film in J/(kg K)
-  rho_film = 2712; % Film density in kg/m^3
-  T0 = fluence/(t_film * C_film * rho_film); % Initial temperature rise
-  fprintf('A %d nm thick Aluminum film gives a temperature rise of %.1f K\n',t_film*1e9,T0)
-  % Calculate teperature profile
-  sigma = sqrt(2*kappa_T*time); % Width of temperature pulse
-  dz = sigma(1); % Let depth step be the width at the first timepoint (FTCS Stability critereon)
-  z = dz:dz:5*Lext;
-  for m = 1:num_times % time loop
-    for n = 1:length(z) % depth loop
-      T(m,n) = dz*(T0/sigma(m))*(1/sqrt(2*pi))*exp(-(z(n)^2)/(2*sigma(m)^2));
-    end
-  end
-  strain = alpha_T*T; % Strain is given by thermal expansion coefficient times temperature
+angle = thetaB + angle*pi/180; % Convert angle to radians and add Bragg Angle
+
+if strcmp(model,'thermalFilm')
+  [st1 st2 st3 time_out z] = thermalFilm (crystal, fluence, time, 5.1*Lext);
 else
   fprintf('Not a valid model\n')
   return
 end
-
-%%%%% 12/15/16: Next make "thermal" a separate function.  Then call WieAdapt.
-
-%% Eventually, a strain propogation algorithim (with remeshing) goes here
-
- %%%for testing
-A =strain;
-
-
+ 
+ % Still need to remesh time for most strains
+ % Need to add a single timepoint test for comparisson with Sergey's GID
+ % Otherwise seems to work 12/28/16 EL
+ 
+for m = 1: length(time)
+  STRAIN = [st1(m,:)' st2(m,:)' st3(m,:)']; % Evaluate strain at each time
+  [X err Steps Strain_out] = WieAdapt (STRAIN, z, angle, opts, params);
+  A(m,:) = X.*conj(X); % Intensity Amplitude
 end
+
+
+
