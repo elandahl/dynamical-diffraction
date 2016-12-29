@@ -34,10 +34,11 @@
 %   angle       a vector of angles calculated, absolute, in degrees
 %
 % SAMPLE Usage:
-% [A time angle] = TRXD ('thermalFilm', 'Si', [0 0 4], [0 0 1], 10, 1, 0, 0)
+% [A time angle Strain z] = TRXD ('thermalFilm', 'Si', [0 0 4], [0 0 1], 10, 1, 0, 0)
 
 
-function [A time angle] = TRXD (model, crystal, reflection, cut, energy, fluence, angle, time)
+function [A time angle Strain_save z] = TRXD (model, crystal, reflection, cut, energy, fluence, angle, time)
+more off; % Turn on scrolling
 
 %% Some constants that can be changed to speed things up when using defaults
 num_times = 50;
@@ -152,20 +153,29 @@ end
 angle = thetaB + angle*pi/180; % Convert angle to radians and add Bragg Angle
 
 if strcmp(model,'thermalFilm')
-  [st1 st2 st3 time_out z] = thermalFilm (crystal, fluence, time, 5.1*Lext);
+  [longitudinal transverse sheer time_out z] = thermalFilm (crystal, fluence, time, 5.1*Lext);
 else
   fprintf('Not a valid model\n')
   return
 end
  
- % Still need to remesh time for most strains
  % Need to add a single timepoint test for comparisson with Sergey's GID
  % Otherwise seems to work 12/28/16 EL
  
 for m = 1: length(time)
-  STRAIN = [st1(m,:)' st2(m,:)' st3(m,:)']; % Evaluate strain at each time
-  [X err Steps Strain_out] = WieAdapt (STRAIN, z, angle, opts, params);
+  if time(m) == time_out(m) % if the time doesn't need to be remeshed
+   st1(m,:) = longitudinal(m,:);
+   st2(m,:) = transverse(m,:);
+   st3(m,:) = sheer(m,:);
+  else % remesh time if necessary
+   st1(m,:) = interp1(time_out,longitudinal,time(m), 'spline', 'extrap');
+   st2(m,:) = interp1(time_out,transverse,time(m), 'spline', 'extrap');
+   st3(m,:) = interp1(time_out,sheer,time(m), 'spline', 'extrap');
+  end
+  Strain_in = [st1(m,:)' st2(m,:)' st3(m,:)']; % Evaluate strain at each time
+  [X err Steps Strain_out] = WieAdapt (Strain_in, z, angle, opts, params);
   A(m,:) = X.*conj(X); % Intensity Amplitude
+  Strain_save(m,:,:) = Strain_out(:,:);
 end
 
 
