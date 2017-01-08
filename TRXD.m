@@ -41,8 +41,11 @@ function [A time angle Strain_save z] = TRXD (model, crystal, reflection, cut, e
 more off; % Turn on scrolling
 
 %% Some constants that can be changed to speed things up when using defaults
-num_times = 50;
-num_angles = 50;
+num_times = 20;
+num_angles = 80;
+time_f = 5e-7; % in seconds
+angle_width = 5e-3; % in degrees
+
 
 
 %% Check inputs
@@ -119,7 +122,7 @@ params(5) = delta;
 params(6) = lambda; 
 
 % Assemble opts array containing options for adaptative depth stepping
-tol = 1e-6; % tolerance.  Higher value for more speed and less precision
+tol = 1e-1; % tolerance.  Higher value for more speed and less precision
 dz_min = 1.1e-10; % Minimum step size in meters
 dz_max = 1e-7; % Maximum step size in meters
 f = 2; %Shift factor for convergence
@@ -136,7 +139,7 @@ Lext = lambda*sqrt(abs(gammaH)*gamma0)/(pi*abs(p_Hr));
 
 %% Calculate time array 
 if time == 0
-  time = 1e-8; % set default maximum time delay to 10 ns
+  time = time_f; % set default maximum time delay to default
 end
 if (length(time)==1) 
   time = time/num_times:time/num_times:time;
@@ -144,10 +147,10 @@ end
 
 %% Calculate angular array
 if (angle == 0)
-  angle = 1e-2; % set default angular width to 10 mdeg
+  angle = angle_width; % set default angular width to 10 mdeg
 end
 if (length(angle)==1)
-  angle = (0:angle/num_angles:angle)-angle/2;
+  angle = (0:angle/num_angles:angle)-0.7*angle/2;
 end
 
 angle = thetaB + angle*pi/180; % Convert angle to radians and add Bragg Angle
@@ -178,5 +181,5 @@ for m = 1: length(time)
   Strain_save(m,:,:) = Strain_out(:,:);
 end
 
-
+angle = (angle-thetaB-delta)*180/pi; % Convert angle back to degrees relative to Bragg
 

@@ -61,7 +61,7 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
   
 % Calculate teperature profile
   sigma = sqrt(2*D_t*time); % Width of temperature pulse
-  dz = sigma(1); % Let depth step be the width at the first timepoint (FTCS Stability critereon)
+  dz = min(sigma(1),max_depth/100); % Let depth step be the width at the first timepoint (FTCS Stability critereon)
   z = dz:dz:max_depth;
   for m = 1:length(time) % time loop
     for n = 1:length(z) % depth loop
