@@ -3,11 +3,14 @@
 % May be called from either within of after TRXD.m
 
 
-function [centroid FWHM] = TRXD_plots (A,time,angle,Strain,z,opts)
+function [Intensity centroid FWHM] = TRXD_plots (A,time,angle,Strain,z,ang_res,opts)
 
 z = z*1e6; % Convert depth to um for plotting
 time = time*1e9; % Convert time to ns for plotting
 angle = angle*1e3; % Convert degrees to mdeg for plotting
+ang_res = ang_res*1e3/(2*sqrt(2*log(2))); % Angular resolution for blurring
+
+
 
 trans_status = max(max(Strain(:,:,2)))>1e-10; % 0 if no transverse strain
 sheer_status = max(max(Strain(:,:,2)))>1e-10; % 0 if no sheer strain
@@ -38,6 +41,10 @@ for i = 1:length(time)
   sheer = Strain(i,:,3);
   Int = A(i,:).*conj(A(i,:)); % x-ray intensity
   centroid(i) = sum(Int.*angle)/sum(Int);
+  f = (1/(ang_res*sqrt(2*pi)))*exp(-((angle-centroid(i))/(sqrt(2)*ang_res)).^2);
+  Int = conv(Int,f,'same');
+  Int = Int/(max(Int));
+  Intensity(i,:)=Int; % return convolved intensities
   FWHM(i) = 2*sqrt(2*log(2))*sqrt((1/(length(angle)-1))*sum(Int.*(angle-centroid(i)).^2));
 
   if strcmp(opts,'animate')==1
@@ -101,7 +108,7 @@ for i = 1:length(time)
   
   end % End Time loop
   
-  if strcmp(opts,'none')~=0
+  if strcmp(opts,'none')~=1
   
   figure(10);clf; hold on
   
@@ -116,7 +123,7 @@ for i = 1:length(time)
     ylabel('FWHM (mdeg)')
   
   subplot(2,2,3)
-    surf(time,angle,(A.*conj(A))','LineStyle','none')
+    surf(time,angle,(Intensity'),'LineStyle','none')
     ylabel('Angle (mdeg)')
     xlabel('Time (ns)')
     title('Linear Scale')
@@ -126,7 +133,7 @@ for i = 1:length(time)
     xlim([time(1) time(end)])
   
   subplot(2,2,4)
-    surf(time,angle,(log(A.*conj(A)))','LineStyle','none')
+    surf(time,angle,(log(Intensity))','LineStyle','none')
     ylabel('Angle (mdeg)')
     xlabel('Time (ns)')
     title('Log Scale')
