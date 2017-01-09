@@ -1,9 +1,15 @@
 % thermalFilm.m
-% Simple strain model for a thin Aluminum film on a semiconductor
-% Presumes that the temperature rise on the semiconductor surface
-% is the same as the temperature jump of the film
+% Classical strain model for a thin Aluminum film on a semiconductor
+% Presumes that the temperature rise on the film is uniform and instantaneous
+% and that the thermal contact is perfect
 % A more sophisticated model with better Physics (e.g. AMM, DMM) will be needed!
-% First written by Eric Landahl, 12.28.2017
+% Also, does not include nanoscale phenomena (e.g. phonon mean free path)
+% Also, no acoustic propogation is included.  This could be called later.
+% Model: see p. 429 (Sec. 10.7) of Hahn, "Heat Conduction" 3rd edition
+% Aluminum properties are hard coded
+% Semiconductor properties looked up in sample.dat, which is required
+% First written by Eric Landahl, 12.28.2016
+% Revised by EL 1.9.2017
 % Usually called by TRXD.m
 %
 %% INPUTS:
@@ -42,32 +48,51 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
   time = time_in; 
   % In this simple model, there is no penalty for calculating many timepoints
   % so the given array of timepoints is used. 
-  % Depth steps are chose below.
 
-% Load properties
+% Load substrate properties
   load sample.dat; 
   ID = find(strcmp({sample.name}, crystal)==1);
   alpha_t = sample(ID).thermalExpansion.val; % 1/K
-  D_t = sample(ID).thermalDiffusion.val; % cm^2/s
-  D_t = D_t / 10000; % convert from cm^2/s to m^2/s
+  alpha2 = sample(ID).thermalDiffusion.val; % cm^2/s
+  alpha2 = alpha2 / 10000; % convert from cm^2/s to m^2/s
+  k2 = sample(ID).thermalConductivity.val; % W/(cm K)
+  k2 = k2 * 100; % Convert from W/(cm K) to W/(m K)
+  
+% Aluminum film properties
+  L = 70e-9; % Film thickness in m
+  C_film = 904; %Specific heat of film in J/(kg K)
+  rho_film = 2712; % Film density in kg/m^3
+  k1 = 204; % Film thermal conductivity in W/(m K)
+  alpha1 = 8.418E-5; % Film thermal diffusivity in m^2/s
   
 % Calculate initial temperature rise
   fluence = fluence*10; % Convert from mJ/cm^2 to J/m^2
-  t_film = 70e-9; % Film thickness in m
-  C_film = 904; %Specific heat of film in J/(kg K)
-  rho_film = 2712; % Film density in kg/m^3
-  T0 = fluence/(t_film * C_film * rho_film); % Initial temperature rise
-  fprintf('A %d nm thick Aluminum film gives a temperature rise of %.1f K\n',t_film*1e9,T0)
+  T0 = fluence/(L * C_film * rho_film); % Initial temperature rise
+  fprintf('A %d nm thick Aluminum film gives a temperature rise of %.1f K.\n',L*1e9,T0)
   
-% Calculate teperature profile
-  sigma = sqrt(2*D_t*time); % Width of temperature pulse
-  dz = min(sigma(1),max_depth/100); % Let depth step be the width at the first timepoint (FTCS Stability critereon)
+% Unitless parameters (see Hahn, "Thermal Conductivity", Eqs. 10-135 and 10-138)  
+  mu = sqrt(alpha1/alpha2);
+  beta = (k1/k2)/mu;
+  gamma = (beta - 1)/(beta + 1);
+  
+% Spatial grid
+  num_depths = 1000;  % number of depth points z to be calculated
+  dz = max_depth/num_depths;
   z = dz:dz:max_depth;
-  for m = 1:length(time) % time loop
-    for n = 1:length(z) % depth loop
-      T(m,n) = dz*(T0/sigma(m))*(1/sqrt(2*pi))*exp(-(z(n)^2)/(2*sigma(m)^2));
-    end
+  
+% Meshgrid for calculation speed & ease
+  [Time Z] = meshgrid(time,z); % Time and Z are 2D, time and z are 1D
+
+% Calculate temperature profile
+  max_n = 100; % number of terms in series expansion, default 100
+  TT = 0.*Time.*Z; % 
+  for n = 1: max_n  % Series expansion solution of heat equation
+    T1 = erfc((2*n*L + mu*Z)./(2*(sqrt(alpha1*Time)))); % temporary
+    T2 = erfc(((2*n + 2)*L + mu*Z)./(2*sqrt(alpha1*Time))); % temporary
+    TT = TT + (gamma^n) * (T1 - T2); % temporary
   end
+  T = T0 * (1/2) * (1 + gamma) * TT; % Temperature at all z and time  
+  fprintf('The maximum bulk temperature rise is %.1f K.\n',max(max(T)));
   
 % Calculate strains
   longitudinal = alpha_t*T; % Strain is given by thermal expansion coefficient times temperature
