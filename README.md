@@ -15,18 +15,18 @@ Getting ready to widely distribute.
 ## To Do List
 - [x] Fix incompatibilities with standard MatLAB functions
 - [ ] Handle a few simple bulk crystals over a reasonable energy range (7 - 15 keV)
-..  [ ]  GaAs
-..  [ ]  Si
-..  [ ]  InSb
-..  [ ]   Ge
+*  GaAs
+*  Si
+*  InSb
+*  Ge
 - [ ]  Develop an easy to use driver to TRXD calling various strain functions
-- [ ] Develop simple strain functions
-  X Thermal diffusion
-  * Simple mean free path modified thermal diffusion model
-  * Electron diffusion with Auger and radiative decay
-  * Thomsen model
-  * Arbitrary strain propogation (e.g. Diffusion drives strain)
-  * Noninear absorption (e.g. Saturable Absorption, Two Photon Absorption)
+Develop simple strain functions
+ [X] Thermal diffusion
+ [ ] Simple mean free path modified thermal diffusion model
+ [ ] Electron diffusion with Auger and radiative decay
+ [ ] Thomsen model
+ [ ] Arbitrary strain propogation (e.g. Diffusion drives strain)
+ [ ] Noninear absorption (e.g. Saturable Absorption, Two Photon Absorption)
 - [ ] Transverse and shear strain, benchmarked to GID
 - [ ] More sophisticated models for nanoscale thermal and electrical transport
 
