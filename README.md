@@ -8,9 +8,9 @@ Wie_Adapt_Test.m will compare a simple strained crystal to a GID result
 ## For help
 In MatLab or Octave type `help filename`
 
-## Update 12/7/2017
-Fixed incompatibilities with standard MatLAB functions
-Wrote README.md and added To Do List
+## Update 1/9/2017
+Reorganized into folders.
+Getting ready to widely distribute.
 
 ## To Do List
 - [x] Fix incompatibilities with standard MatLAB functions
@@ -21,7 +21,7 @@ Wrote README.md and added To Do List
   * Ge
 - [ ]  Develop an easy to use driver to TRXD calling various strain functions
 - [ ] Develop simple strain functions
-  * Thermal diffusion
+  X Thermal diffusion
   * Simple mean free path modified thermal diffusion model
   * Electron diffusion with Auger and radiative decay
   * Thomsen model
