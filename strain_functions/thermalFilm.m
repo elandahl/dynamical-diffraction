@@ -70,10 +70,10 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
   rho2 = rho2 * 1000; % Convert from g/cm^3 to kg/m^3
   
   
-  %% Temporary for troubleshooting
-  rho1 = rho2;
-  k1 = k2;
-  C1 = C2;
+  %% Temporary for troubleshooting: make the sampe all semiconductor
+%  rho1 = rho2;
+%  k1 = k2;
+%  C1 = C2;
  
 % Calculate initial temperature rise
   fluence = fluence*10; % Convert from mJ/cm^2 to J/m^2
@@ -126,19 +126,20 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
   Q1 = Q1/10; % convert from J/m^2 to mJ/cm^2
   Q2 = Q2/10; % convert from J/m^2 to mJ/cm^2
   
-   figure(1);clf;hold on;plot(Time,Q1,'-b'),plot(Time,Q2,'-k');xlabel('Time');ylabel('Heat');hold off;
-   figure(2);clf;hold on;plot(Time,T1(end,:),'-b'),plot(Time,T2(1,:),'-k');xlabel('Time');ylabel('Interface Temperature');hold off;
+   %figure(1);clf;hold on;plot(Time,Q1,'-b'),plot(Time,Q2,'-k');xlabel('Time');ylabel('Heat');hold off;
+   %figure(2);clf;hold on;plot(Time,T1(end,:),'-b'),plot(Time,T2(1,:),'-k');xlabel('Time');ylabel('Interface Temperature');hold off;
   
-  fprintf('Initially the film absorbs %.2f mJ/cm^2 of heat.\n',Q1(1)+Q2(1));
-  fprintf('After %.1f ns, the film has lost %.2f mJ/cm^2 of heat,\n',time(end)*1e9,Q1(1)-Q1(end));
-  fprintf('and the bulk has gained %.2f mJ/cm^2 of heat.\n',Q2(end)-Q2(1));
+%  fprintf('Initially the film absorbs %.2f mJ/cm^2 of heat.\n',Q1(1)+Q2(1));
+%  fprintf('After %.1f ns, the film has lost %.2f mJ/cm^2 of heat,\n',time(end)*1e9,Q1(1)-Q1(end));
+%  fprintf('and the bulk has gained %.2f mJ/cm^2 of heat.\n',Q2(end)-Q2(1));
  
  
 % Calculate strains in bulk
-  longitudinal = T1; % Strain is given by thermal expansion coefficient times temperature
-  transverse =T2; % No transverse strain
-  sheer = [zz z+L]; % No sheer strain
+  longitudinal = alpha_t.*T2'; % Strain is given by thermal expansion coefficient times temperature
+  transverse =0.*T2'; % No transverse strain
+  sheer = 0.*T2'; % No sheer strain
   time_out = time;
 
+  end
   
   

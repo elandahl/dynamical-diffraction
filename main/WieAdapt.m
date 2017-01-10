@@ -1,12 +1,12 @@
 % WieAdapt.m
-% [X err Steps] = WieAdapt (Strain, z, theta, opts, params)
+% [X X0 err Steps] = WieAdapt (Strain, z, theta, opts, params)
 %
 % Function to take adaptive depth steps
 % to propagate dynamical x-ray diffraction
 % in a strained crystal up from the unstrained bulk
 % using Wie's algorithim in J. Appl. Phys. 59, 3743 (1986)
 % Written by Eric Landahl, 11/6/2016 
-% Last revised by EL 12/7/16 to make compatible with standard MATLAB syntax
+% Last revised by EL 1/9/17 to also output unstrained scattering X0
 % For more details see help for Wiestep.m
 %
 % REQUIRES THESE FUNCTIONS:
@@ -32,6 +32,7 @@
 %
 % OUTPUTS
 %   X       M x 1 complex scattering amplitude. Intensity = X.*conj(X)
+%   X0      Complex scattering amplitude of unstrained crystal
 %   err     maximum error that occured during the calculation
 %   Steps   number of steps required to calculate X
 %
@@ -46,7 +47,7 @@
 
 
 
-function [X err Steps Strain] = WieAdapt (Strain, z, theta, opts, params)
+function [X X0 err Steps Strain] = WieAdapt (Strain, z, theta, opts, params)
 
 %% Unpack opts
 tol = opts(1);

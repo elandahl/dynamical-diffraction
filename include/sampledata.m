@@ -128,7 +128,7 @@ sample(1).name = 'Si';
 % Gallium Arsenide
 sample(2).name = 'GaAs';
 
-  sample(2).bandGap.val = 0;
+  sample(2).bandGap.val = 1.42;
   sample(2).bandGap.unit = 'eV';
   sample(2).bandGap.var = 'Eg';
   sample(2).bandGap.ref = 'ioffe';
@@ -153,7 +153,7 @@ sample(2).name = 'GaAs';
   sample(2).DebyeTemp.var = 'Theta_D';
   sample(2).DebyeTemp.ref = 'ioffe';
 
-  sample(2).massDensity.val = 0;
+  sample(2).massDensity.val = 5.32;
   sample(2).massDensity.unit = 'g/cm^3';
   sample(2).massDensity.var = 'rho_m';
   sample(2).massDensity.ref = 'ioffe';
@@ -183,37 +183,37 @@ sample(2).name = 'GaAs';
   sample(2).bulkModulus.var = 'K';
   sample(2).bulkModulus.ref = 'ioffe';
   
-  sample(2).specificHeat.val = 0;
+  sample(2).specificHeat.val = 3.30E-01;
   sample(2).specificHeat.unit = 'J/(g K)';
   sample(2).specificHeat.var = 'C';
   sample(2).specificHeat.ref = 'ioffe';
   
-  sample(2).thermalConductivity.val = 0;
+  sample(2).thermalConductivity.val = 0.55;
   sample(2).thermalConductivity.unit = 'W/(cm K)';
   sample(2).thermalConductivity.var = 'kappa_t';
   sample(2).thermalConductivity.ref = 'ioffe';  
 
-  sample(2).thermalDiffusion.val = 0;
+  sample(2).thermalDiffusion.val = 0.31;
   sample(2).thermalDiffusion.unit = 'cm^2/s';
   sample(2).thermalDiffusion.var = 'D_t';
   sample(2).thermalDiffusion.ref = 'ioffe';
   
-  sample(2).thermalExpansion.val = 0;
+  sample(2).thermalExpansion.val = 5.73E-06;
   sample(2).thermalExpansion.unit = '1/K';
   sample(2).thermalExpansion.var = 'alpha_t';
   sample(2).thermalExpansion.ref = 'ioffe';
   
-  sample(2).PoissonRatio.val = 0;
+  sample(2).PoissonRatio.val = 0.31;
   sample(2).PoissonRatio.unit = '';
   sample(2).PoissonRatio.var = 'nu';
   sample(2).PoissonRatio.ref = 'ioffe';
   
-  sample(2).soundLongitudinal.val = 0;
+  sample(2).soundLongitudinal.val = 4.73;
   sample(2).soundLongitudinal.unit = 'um/ns';
   sample(2).soundLongitudinal.var = 'v_L';
   sample(2).soundLongitudinal.ref = 'ioffe';
   
-  sample(2).soundTransverse.val = 0;
+  sample(2).soundTransverse.val = 3.35;
   sample(2).soundTransverse.unit = 'um/ns';
   sample(2).soundTransverse.var = 'v_T';
   sample(2).soundTransverse.ref = 'ioffe';
@@ -221,7 +221,7 @@ sample(2).name = 'GaAs';
 % Germanium
 sample(3).name = 'Ge';
 
-  sample(3).bandGap.val = 0;
+  sample(3).bandGap.val = 0.661;
   sample(3).bandGap.unit = 'eV';
   sample(3).bandGap.var = 'Eg';
   sample(3).bandGap.ref = 'ioffe';
@@ -246,7 +246,7 @@ sample(3).name = 'Ge';
   sample(3).DebyeTemp.var = 'Theta_D';
   sample(3).DebyeTemp.ref = 'ioffe';
 
-  sample(3).massDensity.val = 0;
+  sample(3).massDensity.val = 5.3234;
   sample(3).massDensity.unit = 'g/cm^3';
   sample(3).massDensity.var = 'rho_m';
   sample(3).massDensity.ref = 'ioffe';
@@ -276,37 +276,37 @@ sample(3).name = 'Ge';
   sample(3).bulkModulus.var = 'K';
   sample(3).bulkModulus.ref = 'ioffe';
   
-  sample(3).specificHeat.val = 0;
+  sample(3).specificHeat.val = 0.31;
   sample(3).specificHeat.unit = 'J/(g K)';
   sample(3).specificHeat.var = 'C';
   sample(3).specificHeat.ref = 'ioffe';
   
-  sample(3).thermalConductivity.val = 0;
+  sample(3).thermalConductivity.val = 0.58;
   sample(3).thermalConductivity.unit = 'W/(cm K)';
   sample(3).thermalConductivity.var = 'kappa_t';
   sample(3).thermalConductivity.ref = 'ioffe';  
 
-  sample(3).thermalDiffusion.val = 0;
+  sample(3).thermalDiffusion.val = 0.36;
   sample(3).thermalDiffusion.unit = 'cm^2/s';
   sample(3).thermalDiffusion.var = 'D_t';
   sample(3).thermalDiffusion.ref = 'ioffe';
   
-  sample(3).thermalExpansion.val = 0;
+  sample(3).thermalExpansion.val = 5.90E-06;
   sample(3).thermalExpansion.unit = '1/K';
   sample(3).thermalExpansion.var = 'alpha_t';
   sample(3).thermalExpansion.ref = 'ioffe';
   
-  sample(3).PoissonRatio.val = 0;
+  sample(3).PoissonRatio.val = 0.26;
   sample(3).PoissonRatio.unit = '';
   sample(3).PoissonRatio.var = 'nu';
   sample(3).PoissonRatio.ref = 'ioffe';
   
-  sample(3).soundLongitudinal.val = 0;
+  sample(3).soundLongitudinal.val = 4.87;
   sample(3).soundLongitudinal.unit = 'um/ns';
   sample(3).soundLongitudinal.var = 'v_L';
   sample(3).soundLongitudinal.ref = 'ioffe';
   
-  sample(3).soundTransverse.val = 0;
+  sample(3).soundTransverse.val = 3.57;
   sample(3).soundTransverse.unit = 'um/ns';
   sample(3).soundTransverse.var = 'v_T';
   sample(3).soundTransverse.ref = 'ioffe';
@@ -314,7 +314,7 @@ sample(3).name = 'Ge';
 % Indium Antimonide
 sample(4).name = 'InSb';
 
-  sample(4).bandGap.val = 0;
+  sample(4).bandGap.val = 0.17;
   sample(4).bandGap.unit = 'eV';
   sample(4).bandGap.var = 'Eg';
   sample(4).bandGap.ref = 'ioffe';
@@ -339,7 +339,7 @@ sample(4).name = 'InSb';
   sample(4).DebyeTemp.var = 'Theta_D';
   sample(4).DebyeTemp.ref = 'ioffe';
 
-  sample(4).massDensity.val = 0;
+  sample(4).massDensity.val = 5.77;
   sample(4).massDensity.unit = 'g/cm^3';
   sample(4).massDensity.var = 'rho_m';
   sample(4).massDensity.ref = 'ioffe';
@@ -369,37 +369,37 @@ sample(4).name = 'InSb';
   sample(4).bulkModulus.var = 'K';
   sample(4).bulkModulus.ref = 'ioffe';
   
-  sample(4).specificHeat.val = 0;
+  sample(4).specificHeat.val = 0.2;
   sample(4).specificHeat.unit = 'J/(g K)';
   sample(4).specificHeat.var = 'C';
   sample(4).specificHeat.ref = 'ioffe';
   
-  sample(4).thermalConductivity.val = 0;
+  sample(4).thermalConductivity.val = 0.18;
   sample(4).thermalConductivity.unit = 'W/(cm K)';
   sample(4).thermalConductivity.var = 'kappa_t';
   sample(4).thermalConductivity.ref = 'ioffe';  
 
-  sample(4).thermalDiffusion.val = 0;
+  sample(4).thermalDiffusion.val = 0.16;
   sample(4).thermalDiffusion.unit = 'cm^2/s';
   sample(4).thermalDiffusion.var = 'D_t';
   sample(4).thermalDiffusion.ref = 'ioffe';
   
-  sample(4).thermalExpansion.val = 0;
+  sample(4).thermalExpansion.val = 5.37E-06;
   sample(4).thermalExpansion.unit = '1/K';
   sample(4).thermalExpansion.var = 'alpha_t';
   sample(4).thermalExpansion.ref = 'ioffe';
   
-  sample(4).PoissonRatio.val = 0;
+  sample(4).PoissonRatio.val = 0.35;
   sample(4).PoissonRatio.unit = '';
   sample(4).PoissonRatio.var = 'nu';
   sample(4).PoissonRatio.ref = 'ioffe';
   
-  sample(4).soundLongitudinal.val = 0;
+  sample(4).soundLongitudinal.val = 3.4;
   sample(4).soundLongitudinal.unit = 'um/ns';
   sample(4).soundLongitudinal.var = 'v_L';
   sample(4).soundLongitudinal.ref = 'ioffe';
   
-  sample(4).soundTransverse.val = 0;
+  sample(4).soundTransverse.val = 2.29;
   sample(4).soundTransverse.unit = 'um/ns';
   sample(4).soundTransverse.var = 'v_T';
   sample(4).soundTransverse.ref = 'ioffe';

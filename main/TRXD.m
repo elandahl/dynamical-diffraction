@@ -2,7 +2,7 @@
 % Program to calculate Time-Resolved X-Ray Diffraction 
 % By Eric Landahl, DePaul University Physics Department, elandahl@depaul.edu
 % First written December 13, 2016
-% Last revised by EL 12.28.2016
+% Last revised by EL 1.9.2017 to add unstrained amplitude output
 % Based on previous work by Sooheyong Lee (KRISS) and G. Jackson Williams (LLNL)
 %
 % INPUTS:
@@ -29,22 +29,23 @@
 %     0         a default is used, based on the model
 %
 % OUTPUTS:
-%   A           X-ray scattering amplitude array, returned as A(time, angle)             
+%   A           X-ray scattering amplitude array, returned as A(time, angle)  
+%   A0          unstrained crystal scattering amplitude           
 %   time        a vector of times
 %   angle       a vector of angles calculated, absolute, in degrees
 %
 % SAMPLE Usage:
-% [A time angle Strain z] = TRXD ('thermalFilm', 'Si', [0 0 4], [0 0 1], 10, 1, 0, 0)
+% [A A0 time angle Strain z] = TRXD ('thermalFilm', 'Si', [0 0 4], [0 0 1], 10, 1, 0, 0)
 
 
-function [A time angle Strain_save z] = TRXD (model, crystal, reflection, cut, energy, fluence, angle, time)
+function [A A0 time angle Strain_save z] = TRXD (model, crystal, reflection, cut, energy, fluence, angle, time)
 more off; % Turn on scrolling
 
 %% Some constants that can be changed to speed things up when using defaults
 num_times = 20;
 num_angles = 80;
 time_f = 5e-7; % in seconds
-angle_width = 5e-3; % in degrees
+angle_width = 0.5e-2; % in degrees
 
 
 
@@ -176,10 +177,11 @@ for m = 1: length(time)
    st3(m,:) = interp1(time_out,sheer,time(m), 'spline', 'extrap');
   end
   Strain_in = [st1(m,:)' st2(m,:)' st3(m,:)']; % Evaluate strain at each time
-  [X err Steps Strain_out] = WieAdapt (Strain_in, z, angle, opts, params);
+  [X X0 err Steps Strain_out] = WieAdapt (Strain_in, z, angle, opts, params);
+  A0 = X0.*conj(X0); % Unstrained crystal intensity
   A(m,:) = X.*conj(X); % Intensity Amplitude
   Strain_save(m,:,:) = Strain_out(:,:);
 end
 
-angle = (angle-thetaB-delta)*180/pi; % Convert angle back to degrees relative to Bragg
+angle = (angle-thetaB-2*delta)*180/pi; % Convert angle back to degrees relative to Bragg
 
