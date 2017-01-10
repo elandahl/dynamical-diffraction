@@ -20,6 +20,8 @@ Getting ready to widely distribute.
 *  InSb
 *  Ge
 - [ ]  Develop an easy to use driver to TRXD calling various strain functions
+- [ ] Transverse and shear strain, benchmarked to GID
+
 ## Develop simple strain functions
 - [X] Thermal diffusion
 - [ ] Simple mean free path modified thermal diffusion model
@@ -27,7 +29,6 @@ Getting ready to widely distribute.
 - [ ] Thomsen model
 - [ ] Arbitrary strain propogation (e.g. Diffusion drives strain)
 - [ ] Noninear absorption (e.g. Saturable Absorption, Two Photon Absorption)
-- [ ] Transverse and shear strain, benchmarked to GID
 - [ ] More sophisticated models for nanoscale thermal and electrical transport
 
 
