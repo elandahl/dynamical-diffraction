@@ -49,7 +49,14 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
   % In this simple model, there is no penalty for calculating many timepoints
   % so the given array of timepoints is used. 
 
-% Load substrate properties
+% Aluminum film properties.  "1" refers to the film
+  L = 70e-9; % Film thickness in m
+  C1 = 904; %Specific heat of film in J/(kg K)
+  rho1 = 2712; % Film density in kg/m^3
+  k1 = 204; % Film thermal conductivity in W/(m K)
+  alpha1 = 8.418E-5; % Film thermal diffusivity in m^2/s
+  
+% Load substrate properties.  "2" referes to the substrate
   load sample.dat; 
   ID = find(strcmp({sample.name}, crystal)==1);
   alpha_t = sample(ID).thermalExpansion.val; % 1/K
@@ -57,17 +64,20 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
   alpha2 = alpha2 / 10000; % convert from cm^2/s to m^2/s
   k2 = sample(ID).thermalConductivity.val; % W/(cm K)
   k2 = k2 * 100; % Convert from W/(cm K) to W/(m K)
+  C2 = sample(ID).specificHeat.val; % J/(g K)
+  C2 = C2 * 1000; % Convert from J/(g K) to J/(kg K)
+  rho2 = sample(ID).massDensity.val; % g/cm^3
+  rho2 = rho2 * 1000; % Convert from g/cm^3 to kg/m^3
   
-% Aluminum film properties
-  L = 70e-9; % Film thickness in m
-  C_film = 904; %Specific heat of film in J/(kg K)
-  rho_film = 2712; % Film density in kg/m^3
-  k1 = 204; % Film thermal conductivity in W/(m K)
-  alpha1 = 8.418E-5; % Film thermal diffusivity in m^2/s
   
+  %% Temporary for troubleshooting
+  rho1 = rho2;
+  k1 = k2;
+  C1 = C2;
+ 
 % Calculate initial temperature rise
   fluence = fluence*10; % Convert from mJ/cm^2 to J/m^2
-  T0 = fluence/(L * C_film * rho_film); % Initial temperature rise
+  T0 = fluence/(L * C1 * rho1); % Initial temperature rise in film
   fprintf('A %d nm thick Aluminum film gives a temperature rise of %.1f K.\n',L*1e9,T0)
   
 % Unitless parameters (see Hahn, "Thermal Conductivity", Eqs. 10-135 and 10-138)  
@@ -83,21 +93,51 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
 % Meshgrid for calculation speed & ease
   [Time Z] = meshgrid(time,z); % Time and Z are 2D, time and z are 1D
 
-% Calculate temperature profile
+% Calculate temperature profile in bulk
   max_n = 100; % number of terms in series expansion, default 100
-  TT = 0.*Time.*Z; % 
-  for n = 1: max_n  % Series expansion solution of heat equation
-    T1 = erfc((2*n*L + mu*Z)./(2*(sqrt(alpha1*Time)))); % temporary
-    T2 = erfc(((2*n + 2)*L + mu*Z)./(2*sqrt(alpha1*Time))); % temporary
-    TT = TT + (gamma^n) * (T1 - T2); % temporary
+  T2a = 0.*Time.*Z; % each term gets added to this, starts at zero
+  for n = 0: max_n  % Series expansion solution of heat equation
+    T2b = erfc((2*n*L + mu*Z)./(2*(sqrt(alpha1*Time)))); % temporary
+    T2c = erfc(((2*n + 2)*L + mu*Z)./(2*sqrt(alpha1*Time))); % temporary
+    T2a = T2a + (gamma^n) * (T2b - T2c); % temporary, adding up
   end
-  T = T0 * (1/2) * (1 + gamma) * TT; % Temperature at all z and time  
-  fprintf('The maximum bulk temperature rise is %.1f K.\n',max(max(T)));
+  T2 = T0 * (1/2) * (1 + gamma) * T2a; % Temperature at all z and time  
   
-% Calculate strains
-  longitudinal = alpha_t*T; % Strain is given by thermal expansion coefficient times temperature
-  transverse = 0*T; % No transverse strain
-  sheer = 0*T; % No sheer strain
+% Film calculations are not needed except to check conservation of energy
+% Calculate temperature profile in film.  zz and ZZ are the film depths
+  dzz = L/100; % Choose 100 depth points in the film by default  
+  zz = dzz:dzz:L;
+  [Time ZZ] = meshgrid(time,zz); 
+  T1a = 0.*Time.*ZZ;
+  for n = 0:max_n
+    T1b = erfc(((2*n + 1)*L - ZZ)./(2*sqrt(alpha1*Time)));
+    T1c = erfc(((2*n + 1)*L + ZZ)./(2*sqrt(alpha1*Time)));
+    T1a = T1a + (gamma^n) * (T1b + T1c);
+  end
+  T1 = T0 - T0 * (1/2) * (1 - gamma) * T1a; % Temperature in film
+  T1_end = mean(T1(:,end)); % Average temperature at final timepoint
+  fprintf('After %.1f ns, the average film temperature drops to %.1f deg C.\n',time(end)*1e9,T1_end);
+  fprintf('The maximum bulk %s temperature rise is %.1f deg C.\n',crystal,max(max(T2)));
+  
+% Calculate heat in film
+% Q = integral dzz of rho*C*T
+  Q1 = trapz(ZZ,T1*rho1*C1);
+  Q2 = trapz(Z,T2*rho2*C2);
+  Q1 = Q1/10; % convert from J/m^2 to mJ/cm^2
+  Q2 = Q2/10; % convert from J/m^2 to mJ/cm^2
+  
+   figure(1);clf;hold on;plot(Time,Q1,'-b'),plot(Time,Q2,'-k');xlabel('Time');ylabel('Heat');hold off;
+   figure(2);clf;hold on;plot(Time,T1(end,:),'-b'),plot(Time,T2(1,:),'-k');xlabel('Time');ylabel('Interface Temperature');hold off;
+  
+  fprintf('Initially the film absorbs %.2f mJ/cm^2 of heat.\n',Q1(1)+Q2(1));
+  fprintf('After %.1f ns, the film has lost %.2f mJ/cm^2 of heat,\n',time(end)*1e9,Q1(1)-Q1(end));
+  fprintf('and the bulk has gained %.2f mJ/cm^2 of heat.\n',Q2(end)-Q2(1));
+ 
+ 
+% Calculate strains in bulk
+  longitudinal = T1; % Strain is given by thermal expansion coefficient times temperature
+  transverse =T2; % No transverse strain
+  sheer = [zz z+L]; % No sheer strain
   time_out = time;
 
   
