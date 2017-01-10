@@ -21,12 +21,12 @@ Getting ready to widely distribute.
 *  Ge
 - [ ]  Develop an easy to use driver to TRXD calling various strain functions
 ## Develop simple strain functions
- [X] Thermal diffusion
- [ ] Simple mean free path modified thermal diffusion model
- [ ] Electron diffusion with Auger and radiative decay
- [ ] Thomsen model
- [ ] Arbitrary strain propogation (e.g. Diffusion drives strain)
- [ ] Noninear absorption (e.g. Saturable Absorption, Two Photon Absorption)
+- [X] Thermal diffusion
+- [ ] Simple mean free path modified thermal diffusion model
+- [ ] Electron diffusion with Auger and radiative decay
+- [ ] Thomsen model
+- [ ] Arbitrary strain propogation (e.g. Diffusion drives strain)
+- [ ] Noninear absorption (e.g. Saturable Absorption, Two Photon Absorption)
 - [ ] Transverse and shear strain, benchmarked to GID
 - [ ] More sophisticated models for nanoscale thermal and electrical transport
 
