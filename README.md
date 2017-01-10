@@ -15,10 +15,10 @@ Getting ready to widely distribute.
 ## To Do List
 - [x] Fix incompatibilities with standard MatLAB functions
 - [ ] Handle a few simple bulk crystals over a reasonable energy range (7 - 15 keV)
-  * GaAs
-  * Si
-  * InSb
-  * Ge
+..  [ ]  GaAs
+..  [ ]  Si
+..  [ ]  InSb
+..  [ ]   Ge
 - [ ]  Develop an easy to use driver to TRXD calling various strain functions
 - [ ] Develop simple strain functions
   X Thermal diffusion
