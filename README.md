@@ -20,7 +20,7 @@ Getting ready to widely distribute.
 *  InSb
 *  Ge
 - [ ]  Develop an easy to use driver to TRXD calling various strain functions
-Develop simple strain functions
+## Develop simple strain functions
  [X] Thermal diffusion
  [ ] Simple mean free path modified thermal diffusion model
  [ ] Electron diffusion with Auger and radiative decay
