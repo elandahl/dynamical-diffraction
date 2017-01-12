@@ -41,6 +41,9 @@
 function [A A0 time angle Strain_save z] = TRXD (model, crystal, reflection, cut, energy, fluence, angle, time)
 more off; % Turn on scrolling
 
+%% Include subdirectories in path
+addpath('main','include','strain_functions','data');
+
 %% Some constants that can be changed to speed things up when using defaults
 num_times = 20;
 num_angles = 80;
@@ -143,6 +146,7 @@ if time == 0
   time = time_f; % set default maximum time delay to default
 end
 if (length(time)==1) 
+  dt =time; % save for external file function
   time = time/num_times:time/num_times:time;
 end
 
@@ -158,6 +162,10 @@ angle = thetaB + angle*pi/180; % Convert angle to radians and add Bragg Angle
 
 if strcmp(model,'thermalFilm')
   [longitudinal transverse sheer time_out z] = thermalFilm (crystal, fluence, time, 5.1*Lext);
+elseif strcmp(model,'strainFile')
+  filename = fluence;
+  dz = 10e-9; % depth step in meters
+  [longitudinal transverse sheer time_out z] = strainFile (filename, dz, dt);
 else
   fprintf('Not a valid model\n')
   return

@@ -1,0 +1,103 @@
+\documentclass[letterpaper,11pt]{article}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{verbatim}
+
+
+\renewcommand{\vec}[1]{\mathbf{#1}} % Display vectors as boldface %
+
+\let\oldhat\hat   % Also display hats as boldface
+\renewcommand{\hat}[1]{\oldhat{\mathbf{#1}}} % Also display hats as boldface
+
+\begin{document}
+
+\title{Heat transfer from an ultrafast laser heated metal film to a substrate}
+\author{Eric Landahl}
+%\date{}
+
+\maketitle
+
+\section{Introduction}
+
+
+\section{Classical Treatment}
+
+\subsection{Perfect thermal contact}
+
+These results are taken from Example 10.8 of Hahn and Ozisik, \emph{Heat Conduction} (Wiley, 2012).  The consider a two-layer composite slab with one semi-infinite layer as shown in Fig. XXX.   We will identify the film as region 1 and the bulk as region 2.   
+The layers are presumed to be in perfect thermal contact with region 1 initially at a uniform temperature $T_0$ and region 2 at zero temperature.  Define a dimensionless temperature $\theta_i(x,t)$ as
+\begin{equation}
+\theta_i(x,t) = \dfrac{T_i(x,t)}{T_0} \hspace{0.5in} i = 1,2
+\end{equation}
+With this transformation, the heat transfer problem is written
+\begin{subequations}
+\begin{align}
+\dfrac{\partial^2 \theta_1}{\partial x^2} &= \dfrac{1}{\alpha_1}\dfrac{\partial \theta_1}{\partial t} \hspace{0.5in} in \hspace{0.5in} 0<x<L, \; t>0 \\
+\dfrac{\partial^2 \theta_2}{\partial x^2} &= \dfrac{1}{\alpha_2}\dfrac{\partial \theta_2}{\partial t} \hspace{0.5in} in \hspace{0.5in} x>L,\; t>0
+\end{align}
+\end{subequations}
+subject to the boundary conditions
+\begin{subequations}
+\begin{align}
+& \dfrac{\partial \theta_1}{\partial x} \Big| _{x=0} = 0 \\
+& \theta_1(x=L,t) = \theta_2(x=L,t) \\
+& k_1 \dfrac{\partial\theta_1}{\partial x} \Big| _{x=L} = k_2  \dfrac{\partial\theta_2}{\partial x} \Big| _{x=L} \\
+& \theta_2(x \rightarrow \infty,t) \rightarrow 0
+\end{align}
+\end{subequations}
+and the initial conditions
+\begin{subequations}
+\begin{align}
+& \theta_1(x, t=0) = 1 \hspace{0.5in} in \hspace{0.5in} 0<x<L \\
+& \theta_2(x, t=0) = 0 \hspace{0.5in} in \hspace{0.5in} L<x<\infty
+\end{align}
+\end{subequations}
+where $k_i$ are the thermal conductivities and $\alpha_i$ are the thermal diffusivities of region 1 (film) and region 2 (bulk).  
+Using Laplace rransforms, the solution for the temperature distribution in the two-layer medium is
+\begin{subequations}
+\begin{align}
+& \dfrac{T_1(x,t)}{T_0}=1-\dfrac{1+\gamma}{2}\sum\limits_{n=0}^\infty \gamma^n \Bigg\{ \textnormal{erfc} \left[ \dfrac{(2n+1)L-x}{2\sqrt{\alpha_1 t}} \right] + \textnormal{erfc} \left[ \dfrac{(2n+1)L-x}{2\sqrt{\alpha_1 t}} \right] \Bigg\}  \\
+& \dfrac{T_2(x,t)}{T_0}=\dfrac{1+\gamma}{2}\sum\limits_{n=0}^\infty \gamma^n \Bigg\{ \textnormal{erfc} \left[ \dfrac{(2nL+\mu(x-L)}{2\sqrt{\alpha_1 t}} \right] - \textnormal{erfc} \left[ \dfrac{(2n+2)L+\mu(x-L)}{2\sqrt{\alpha_1 t}} \right] \Bigg\} 
+\end{align}
+\end{subequations}
+where the unitless parameters $\mu$ and $\gamma$ are defined by
+\begin{subequations}
+\begin{align}
+\mu = \sqrt{\dfrac{alpha_1}{\alpha_2}} \\
+\beta = \dfrac{k_1}{k_2} \dfrac{1}{\mu} \\
+\gamma = \dfrac{\beta -1}{\beta+1} \
+
+\subsection{Examples of the classical heat conduction result}
+
+\subsubsection{Aluminum on Silicon}
+
+\subsubsection{Aluminum on Gallium Arsenide}
+
+\subsubsection{Aluminum on Germanium}
+
+\subsubsection{Aluminum on Indium Antimonide}
+
+
+
+\subsection{Diffusive Mismatch Correction}
+
+\subsection{Acoustic Mismatch Correction}
+
+\section{Microscopic Treatment}
+Consider the same problem as in the previous section, but determine the second order energy correction.  You may leave your answer in the form of a summation.
+
+\newpage
+
+\section*{Appendix: Parameters}
+
+\section*{Appendix: Code}
+
+The most recent and up to date code should be obtained from \url{https://github.com/elandahl/dynamical-diffraction/tree/TRXD/strain_functions}.  This code listing is for reference only. 
+ 
+\verbatiminput{../thermalFilm.m}
+
+\end{document}

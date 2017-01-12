@@ -21,7 +21,6 @@
 %   fluence     absorbed laser fluence in mJ/cm^2
 %   time        a vector of times to be calculated in seconds
 %   max_depth   usually 5*Lext, Lext is the x-ray extinction length in meters
-%
 %% OUTPUTS:
 %   longitudinal    longitudinal strain, size = length(time_out) x length(z)
 %   transverse      transverse strain, size = length(time_out) x length(z)
@@ -42,7 +41,7 @@
 % 
 % [st1 st2 st3 time_out z] = thermalFilm ('Si', 1, (1e-10:2e-10:1e-8), 1e-5);
 %
-function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, fluence, time_in, max_depth)
+function [longitudinal trans sheer time_out z]=thermalFilm(crystal,fluence,time_in,max_depth)
 
 % Remesh time
   time = time_in; 
@@ -86,7 +85,7 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
   gamma = (beta - 1)/(beta + 1);
   
 % Spatial grid
-  num_depths = 1000;  % number of depth points z to be calculated
+  num_depths = 10000;  % number of depth points z to be calculated
   dz = max_depth/num_depths;
   z = dz:dz:max_depth;
   
@@ -116,30 +115,29 @@ function [longitudinal transverse sheer time_out z] = thermalFilm (crystal, flue
   end
   T1 = T0 - T0 * (1/2) * (1 - gamma) * T1a; % Temperature in film
   T1_end = mean(T1(:,end)); % Average temperature at final timepoint
-  fprintf('After %.1f ns, the average film temperature drops to %.1f deg C.\n',time(end)*1e9,T1_end);
-  fprintf('The maximum bulk %s temperature rise is %.1f deg C.\n',crystal,max(max(T2)));
+  fprintf('After %.1f ns, the average film temperature rise is only %.1f deg C.\n', ...
+  time(end)*1e9,T1_end);
+  fprintf('The maximum bulk %s temperature rise is %.1f deg C.\n',crystal, ...
+  max(max(T2)));
   
 % Calculate heat in film
 % Q = integral dzz of rho*C*T
-  Q1 = trapz(ZZ,T1*rho1*C1);
-  Q2 = trapz(Z,T2*rho2*C2);
-  Q1 = Q1/10; % convert from J/m^2 to mJ/cm^2
-  Q2 = Q2/10; % convert from J/m^2 to mJ/cm^2
+%  Q1 = trapz(ZZ,T1*rho1*C1);
+%  Q2 = trapz(Z,T2*rho2*C2);
+%  Q1 = Q1/10; % convert from J/m^2 to mJ/cm^2
+%  Q2 = Q2/10; % convert from J/m^2 to mJ/cm^2
   
-   %figure(1);clf;hold on;plot(Time,Q1,'-b'),plot(Time,Q2,'-k');xlabel('Time');ylabel('Heat');hold off;
-   %figure(2);clf;hold on;plot(Time,T1(end,:),'-b'),plot(Time,T2(1,:),'-k');xlabel('Time');ylabel('Interface Temperature');hold off;
-  
-%  fprintf('Initially the film absorbs %.2f mJ/cm^2 of heat.\n',Q1(1)+Q2(1));
-%  fprintf('After %.1f ns, the film has lost %.2f mJ/cm^2 of heat,\n',time(end)*1e9,Q1(1)-Q1(end));
-%  fprintf('and the bulk has gained %.2f mJ/cm^2 of heat.\n',Q2(end)-Q2(1));
- 
  
 % Calculate strains in bulk
-  longitudinal = alpha_t.*T2'; % Strain is given by thermal expansion coefficient times temperature
-  transverse =0.*T2'; % No transverse strain
+  longitudinal = alpha_t.*T2'; % Strain is thermal expansion coeff times temperature
+  trans =0.*T2'; % No transverse strain
   sheer = 0.*T2'; % No sheer strain
   time_out = time;
 
+% Outputs not needed for TRXD
+
+save thermalFilmOut.m; % Save all variables for future use
+  
   end
   
   

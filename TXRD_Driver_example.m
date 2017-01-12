@@ -9,16 +9,15 @@ addpath('main','include','strain_functions','data');
 
 %% Genreate fresh sample material properties data file
 sampledata; % creates file sample.dat database of material properties
-
 %% Calculate TRXD for Si
 model = 'thermalFilm';
-crystal = 'Si';
+crystal = 'GaAs';
 reflection = [0 0 4];
 cut = [0 0 1];
 energy = 10; % in keV
 fluence = 1; % in mJ/cm^2
 angles = 0; % deg. relative, use 0 for default angles
-times = logspace(-1,2.5,20)*1e-9; % in seconds; use 0 for default times
+times = logspace(-3,3,30)*1e-9; % in seconds; use 0 for default times
 fprintf('Starting TRXD calculation.\n')
 [A A0 times angles Strain z] = TRXD (model, crystal, reflection, cut, energy, fluence, angles, times);
 
