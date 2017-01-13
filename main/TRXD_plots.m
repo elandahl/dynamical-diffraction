@@ -114,34 +114,81 @@ for i = 1:length(time)
   figure(10);clf; hold on;
   
   subplot(2,2,1)
-    plot(time,centroid,'o')
+    plot(time,centroid)
     xlabel('Time (ns)')
     ylabel('Centroid (mdeg)')
   
-  subplot(2,2,2)
-    plot(time,FWHM,'o')
+  subplot(2,2,3)
+    plot(time,FWHM)
     xlabel('Time (ns)')
     ylabel('FWHM (mdeg)')
   
-  subplot(2,2,3)
-    surf(time,angle,(Intensity'),'LineStyle','none')
-    ylabel('Angle (mdeg)')
-    xlabel('Time (ns)')
-    title('Linear Scale')
-    view(2)
-    grid off
-    ylim([min(angle)/2 max(angle)/2])
-    xlim([time(1) time(end)])
-  
-  subplot(2,2,4)
-    surf(time,angle,(log(Intensity))','LineStyle','none')
-    ylabel('Angle (mdeg)')
-    xlabel('Time (ns)')
-    title('Log Scale')
-    view(2)
-    grid off
-    ylim([min(angle) max(angle)])
-    xlim([time(1) time(end)])
+%  subplot(2,2,3)
+%    surf(time,angle,(Intensity'),'LineStyle','none')
+%    ylabel('Angle (mdeg)')
+%    xlabel('Time (ns)')
+%    title('Linear Scale')
+%    view(2)
+%    grid off
+%    ylim([min(angle)/5 max(angle)/3])
+%    xlim([time(1) time(end)])
+%  
+%  subplot(2,2,3)
+%    surf(time,angle,(log(Intensity))','LineStyle','none')
+%    ylabel('Angle (mdeg)')
+%    xlabel('Time (ns)')
+%    title('Log Scale')
+%    view(2)
+%    grid off
+%    ylim([min(angle)/1 max(angle)/6])
+%    xlim([time(1) time(end)])
+
+ii(1)=1;  % Choose these timepoints
+ii(2)=4;
+ii(3)=10;
+ii(4)=20;
+ii(5)=25;
+ii(6)=30;
+time = time*1e-9; % convert to ns for plotting
+
+subplot(2,2,2);hold all;
+for j = 1:6
+ti = ii(j);
+plot(angle,Intensity(ii(j),:))
+end
+xlabel('Angle (mdeg)')
+ylabel('X-ray Intensity')
+xlim([-1 4.5])
+ti=1;
+lgd = sprintf('%.0e s', time(ti));
+for idx=2:6, ti = ii(idx); lgd = strvcat(lgd, sprintf('%.0e s', time(ti))); end,
+lgd=cellstr(lgd);
+%for idx=1:6, disp(lgd{idx}), end
+LEG=legend(lgd);
+%set(gca, 'FontSize', 16)
+set(LEG,'FontSize',8)
+
+
+subplot(2,2,4);hold all;
+for j = 1:6
+ti = ii(j);
+semilogy(angle,Intensity(ii(j),:))
+end
+xlabel('Angle (mdeg)')
+ylabel('X-ray Intensity')
+ylim([1e-4 1.1])
+xlim([-6 9])
+
+
+ti=1;
+lgd = sprintf('%.0e s', time(ti));
+for idx=2:6, ti = ii(idx); lgd = strvcat(lgd, sprintf('%.0e s', time(ti))); end,
+lgd=cellstr(lgd);
+%for idx=1:6, disp(lgd{idx}), end
+LEG=legend(lgd);
+%set(gca, 'FontSize', 16)
+set(LEG,'FontSize',8)
+
 
   end
   

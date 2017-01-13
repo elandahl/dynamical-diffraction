@@ -46,9 +46,9 @@ addpath('main','include','strain_functions','data');
 
 %% Some constants that can be changed to speed things up when using defaults
 num_times = 20;
-num_angles = 80;
+num_angles = 100;
 time_f = 5e-7; % in seconds
-angle_width = 0.5e-2; % in degrees
+angle_width = 1e-2; % in degrees
 
 
 
@@ -155,7 +155,7 @@ if (angle == 0)
   angle = angle_width; % set default angular width to 10 mdeg
 end
 if (length(angle)==1)
-  angle = (0:angle/num_angles:angle)-0.7*angle/2;
+  angle = (0:angle/num_angles:angle)-0.9*angle/2;
 end
 
 angle = thetaB + angle*pi/180; % Convert angle to radians and add Bragg Angle

@@ -11,7 +11,7 @@ addpath('main','include','strain_functions','data');
 sampledata; % creates file sample.dat database of material properties
 %% Calculate TRXD for Si
 model = 'thermalFilm';
-crystal = 'GaAs';
+crystal = 'Ge';
 reflection = [0 0 4];
 cut = [0 0 1];
 energy = 10; % in keV
