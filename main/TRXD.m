@@ -2,7 +2,8 @@
 % Program to calculate Time-Resolved X-Ray Diffraction 
 % By Eric Landahl, DePaul University Physics Department, elandahl@depaul.edu
 % First written December 13, 2016
-% Last revised by EL 1.9.2017 to add unstrained amplitude output
+% Revised by EL 1.9.2017 to add unstrained amplitude output
+% Last revised by EL 1.16.17 to handle benchmarking to Sergey's GID
 % Based on previous work by Sooheyong Lee (KRISS) and G. Jackson Williams (LLNL)
 %
 % INPUTS:
@@ -48,9 +49,7 @@ addpath('main','include','strain_functions','data');
 num_times = 20;
 num_angles = 100;
 time_f = 5e-7; % in seconds
-angle_width = 1e-2; % in degrees
-
-
+angle_width = 2e-2; % in degrees
 
 %% Check inputs
 
@@ -126,7 +125,7 @@ params(5) = delta;
 params(6) = lambda; 
 
 % Assemble opts array containing options for adaptative depth stepping
-tol = 1e-1; % tolerance.  Higher value for more speed and less precision
+tol = 1e-4; % tolerance.  Higher value for more speed and less precision
 dz_min = 1.1e-10; % Minimum step size in meters
 dz_max = 1e-7; % Maximum step size in meters
 f = 2; %Shift factor for convergence
@@ -166,6 +165,16 @@ elseif strcmp(model,'strainFile')
   filename = fluence;
   dz = 10e-9; % depth step in meters
   [longitudinal transverse sheer time_out z] = strainFile (filename, dz, dt);
+elseif strcmp(model,'benchmark')
+  clear time;
+  time = 1;
+  time_out = 1;
+  dz = 5.1*Lext/10000; % 10,000 depth points out to 5.1*Lext
+  z = dz*(1:10000); 
+  transverse = 0.*z; % no transverse strain
+  sheer = 0.*z; % no sheer strain
+  longitudinal = 0.*z;
+  longitudinal = 1e-4 * (z<=1e-6); % Simple strain model 
 else
   fprintf('Not a valid model\n')
   return
@@ -191,5 +200,8 @@ for m = 1: length(time)
   Strain_save(m,:,:) = Strain_out(:,:);
 end
 
-angle = (angle-thetaB-2*delta)*180/pi; % Convert angle back to degrees relative to Bragg
-
+if strcmp(model,'benchmark')
+  angle = angle - delta;
+else
+  angle = (angle-thetaB-2*delta)*180/pi; % Convert angle back to degrees relative to Bragg
+end

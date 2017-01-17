@@ -6,7 +6,8 @@
 % in a strained crystal up from the unstrained bulk
 % using Wie's algorithim in J. Appl. Phys. 59, 3743 (1986)
 % Written by Eric Landahl, 11/6/2016 
-% Last revised by EL 1/9/17 to also output unstrained scattering X0
+% Revised by EL 1/9/17 to also output unstrained scattering X0
+% Last revised by EL 1/16/17 to improve convergence at high strain
 % For more details see help for Wiestep.m
 %
 % REQUIRES THESE FUNCTIONS:
@@ -83,6 +84,9 @@ zz = z0; % start at z0.  zz will be an updated value; z is the imported array
 dz = dz_min; % begin with smallest possible step size
 X_in = Wiestep (0*theta, theta, zz, dz, [0 0 0], params); % calculate unstrained amplitude
 X0=X_in; % Save for later
+intX0 = X0.*conj(X0); % Substrate intensity
+max0 = max(intX0); % Maximium substrate intensity
+max_errs=0;
 
 %% Adaptative stepping main loop
 i = 1; % iteration variable 
@@ -95,17 +99,73 @@ while (zz>=0);
   X_full = Wiestep (X_half, theta, zz, dz/2, st, params); % take a second half step
   intX_full = X_full.*conj(X_full); % intensity after two half steps
   intX_out = X_out.*conj(X_out); % intensity after one full step
+  maxInt = max(X_full.*conj(X_full)); % to check energy conservation
   errs = sum(abs(intX_full-intX_out))/sum(intX_full); % error is the difference in intensities
+  max_errs = max(errs,max_errs); % save maximum error so far
   if (errs<tol) && (dz<dz_max) % If the error is small then
-    dz = dz*f; % increase dz
+    zz = zz - dz; % Move to shorter depth (closer to the surface)
+    dz = dz*f; % increase dz if possible
+    X_in = X_full; % Average full and two half-step results
+  elseif  (errs<tol) && (dz>=dz_max) % If error is small but already at dz=dz_max
+    zz = zz - dz; % Move to shorter depth (closer to the surface)
+    X_in = X_full; % Average full and two half-step results
+  elseif (errs>tol) && (dz<=dz_min) % If the error is large but dz=dz_min
+    X_in = X_full; % Average full and two half-step results
+    zz = zz - dz; % Move to shorter depth (closer to the surface)
   elseif (errs>tol) && (dz>dz_min) % If the error is large then
-    dz = dz/f; % shrink dz
+    dz = dz/(5*f); % shrink dz (don't record X, instead repeat)
   end  
-  st_save(i)=st(1);
-  st_half_save(i)=st_half(1);
-  zz_save(i)=zz;
+
 % Optional plots to watch the algorithim work
-%    figure(10);clf; hold on;
+%  err_save(i) = errs; % save error level
+%  dz_save(i)=dz;
+%  st_save(i)=st(1);
+%  st_half_save(i)=st_half(1);
+%  zz_save(i)=zz;
+%%    figure(20);clf; hold on;
+%%      plot(theta*180/pi,X_out.*conj(X_out),'-r','LineWidth',4)
+%%      plot(theta*180/pi,X_full.*conj(X_full),'-b','LineWidth',1)
+%%      plot(theta*180/pi,X0.*conj(X0),'-k')
+%%      xlabel("Theta (degrees)")
+%%      ylabel("Diffracted intensity")
+%%      title(['Depth: ' num2str(zz*1e6) ' um, Step: ' num2str(dz*1e9) ' nm, Strain: ' num2str(st_half(1))])
+%%    hold off;
+%%    figure(21);clf; hold on;
+%%      semilogy(theta*180/pi,X_out.*conj(X_out),'-r','LineWidth',4)
+%%      semilogy(theta*180/pi,X_full.*conj(X_full),'-b','LineWidth',1)
+%%      semilogy(theta*180/pi,X0.*conj(X0),'-k')
+%%      xlabel("Theta (degrees)")
+%%      ylabel("Diffracted intensity")
+%%      title(['Depth: ' num2str(zz*1e6) ' um, Step: ' num2str(dz*1e9) ' nm, Strain: ' num2str(st_half(1))])
+%%    hold off;
+%%    figure(22);clf;hold on;
+%%      plot(zz_save*1e6,st_save,'or','LineWidth',4)
+%%      plot(zz_save*1e6,st_half_save,'xb','LineWidth',1)
+%%      xlabel('Depth (um)')
+%%      ylabel('Longitudinal Strain')
+%%    hold off;
+%%    figure(23);clf;hold on;
+%%      plot(zz_save*1e6,dz_save*1e9)
+%%      xlabel('Depth (um)')
+%%      ylabel('Step size (nm)')
+%%    hold off;
+%%    figure(24);clf;hold on;
+%%      plot(zz_save*1e6,err_save)
+%%      xlabel('Depth (um)')
+%%      ylabel('Error')
+%%    hold off;
+%%    pause(0.1)
+%% End of optional plots
+  i = i + 1; % increment up number of iterations
+end
+
+%% Return values
+X = X_half/maxInt; %% return X_in
+err = max_errs; % return maximum error
+Steps = i-1; % return number of steps
+
+% Optional plots (after algorithm)
+%    figure(20);clf; hold on;
 %      plot(theta*180/pi,X_out.*conj(X_out),'-r','LineWidth',4)
 %      plot(theta*180/pi,X_full.*conj(X_full),'-b','LineWidth',1)
 %      plot(theta*180/pi,X0.*conj(X0),'-k')
@@ -113,22 +173,31 @@ while (zz>=0);
 %      ylabel("Diffracted intensity")
 %      title(['Depth: ' num2str(zz*1e6) ' um, Step: ' num2str(dz*1e9) ' nm, Strain: ' num2str(st_half(1))])
 %    hold off;
-%    pause(0.1)
-%    figure(9);clf;hold on;
+%    figure(21);clf; hold on;
+%      semilogy(theta*180/pi,X_out.*conj(X_out),'-r','LineWidth',4)
+%      semilogy(theta*180/pi,X_full.*conj(X_full),'-b','LineWidth',1)
+%      semilogy(theta*180/pi,X0.*conj(X0),'-k')
+%      xlabel("Theta (degrees)")
+%      ylabel("Diffracted intensity")
+%      title(['Depth: ' num2str(zz*1e6) ' um, Step: ' num2str(dz*1e9) ' nm, Strain: ' num2str(st_half(1))])
+%    hold off;
+%    figure(22);clf;hold on;
 %      plot(zz_save*1e6,st_save,'or','LineWidth',4)
 %      plot(zz_save*1e6,st_half_save,'xb','LineWidth',1)
-%  hold off;
-% End of optional plots
-  zz = zz - dz; % Move to shorter depth (closer to the surface)
-  err_save(i) = errs; % save error level
-  i = i + 1; % increment up number of iterations
-  %X_old = X_in;
-  X_in = (X_out+X_full)/2; % The half- and full-step results are averaged and fed into the algorithim again to advance
-end
-
-%% Return values
-X = X_in; %% return X_in
-err = max(err_save(1:i-1)); % return maximum error
-Steps = i-1; % return number of steps
+%      xlabel('Depth (um)')
+%      ylabel('Longitudinal Strain')
+%    hold off;
+%    figure(23);clf;hold on;
+%      plot(zz_save*1e6,dz_save*1e9)
+%      xlabel('Depth (um)')
+%      ylabel('Step size (nm)')
+%    hold off;
+%    figure(24);clf;hold on;
+%      plot(zz_save*1e6,err_save)
+%      xlabel('Depth (um)')
+%      ylabel('Error')
+%    hold off;
+%    pause(0.1)
+% End optional plots
 
 end

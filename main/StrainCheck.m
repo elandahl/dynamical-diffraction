@@ -6,6 +6,8 @@
 % Written by Eric Landahl November 7, 2016
 % Revised by EL 12/7/16 to make compatible with standard MATLAB syntax
 % Further revised by EL 12/28/16 to use || instead of | short circuit operators
+% Further revised by EL 1/16/17 to allow down to 0.01 A steps if desired
+% Still needs a routine to pad out insufficiently deep strains
 
 function [warnings Strain opts] = StrainCheck (Strain, z, theta, opts, params)
 
@@ -84,9 +86,9 @@ if (tol <= 0)
 end
 
 %% Using default minimum and maximum step sizes
-if (dz_min <= 1e-10)
-  dz_min = 1e-10; 
-  fprintf('Depth steps have been set to a default minimum of 1 Angstrom.  ');
+if (dz_min <= 1e-12)
+  dz_min = 1e-12; 
+  fprintf('Depth steps have been set to a default minimum of 0.01 Angstrom.  ');
 end
 if (dz_max <= 1e-10 || dz_max >= 1.1e-6 )
   dz_max = 1e-6; 
