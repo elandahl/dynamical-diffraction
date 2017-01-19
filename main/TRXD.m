@@ -4,6 +4,7 @@
 % First written December 13, 2016
 % Revised by EL 1.9.2017 to add unstrained amplitude output
 % Last revised by EL 1.16.17 to handle benchmarking to Sergey's GID
+% Improved accuracy by fixing delta and final step interpolation 1/19/2017
 % Based on previous work by Sooheyong Lee (KRISS) and G. Jackson Williams (LLNL)
 %
 % INPUTS:
@@ -201,7 +202,7 @@ for m = 1: length(time)
 end
 
 if strcmp(model,'benchmark')
-  angle = angle - delta;
+  angle = angle - delta/2;
 else
-  angle = (angle-thetaB-2*delta)*180/pi; % Convert angle back to degrees relative to Bragg
+  angle = (angle-thetaB-delta/2)*180/pi; % Convert angle back to degrees relative to Bragg
 end

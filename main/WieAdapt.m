@@ -8,6 +8,7 @@
 % Written by Eric Landahl, 11/6/2016 
 % Revised by EL 1/9/17 to also output unstrained scattering X0
 % Last revised by EL 1/16/17 to improve convergence at high strain
+% Improved accuracy by fixing delta and final step interpolation 1/19/2017
 % For more details see help for Wiestep.m
 %
 % REQUIRES THESE FUNCTIONS:
@@ -87,6 +88,7 @@ X0=X_in; % Save for later
 intX0 = X0.*conj(X0); % Substrate intensity
 max0 = max(intX0); % Maximium substrate intensity
 max_errs=0;
+X_half = X0; % Just to start
 
 %% Adaptative stepping main loop
 i = 1; % iteration variable 
@@ -99,9 +101,9 @@ while (zz>=0);
   X_full = Wiestep (X_half, theta, zz, dz/2, st, params); % take a second half step
   intX_full = X_full.*conj(X_full); % intensity after two half steps
   intX_out = X_out.*conj(X_out); % intensity after one full step
-  maxInt = max(X_full.*conj(X_full)); % to check energy conservation
   errs = sum(abs(intX_full-intX_out))/sum(intX_full); % error is the difference in intensities
   max_errs = max(errs,max_errs); % save maximum error so far
+  zz_old =zz_half; % To use for corrections on final step
   if (errs<tol) && (dz<dz_max) % If the error is small then
     zz = zz - dz; % Move to shorter depth (closer to the surface)
     dz = dz*f; % increase dz if possible
@@ -160,7 +162,9 @@ while (zz>=0);
 end
 
 %% Return values
-X = X_half/maxInt; %% return X_in
+f1 = zz_old/(zz_old-zz); % Correction factor for final depth step
+X =( f1*X_half + (1-f1)*X_full); % Correct final step
+X = X/max(X.*conj(X)); % Normalize
 err = max_errs; % return maximum error
 Steps = i-1; % return number of steps
 

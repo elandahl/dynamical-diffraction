@@ -3,25 +3,23 @@
 Mostly written and maintained by [Eric Landahl, DePaul University Physics Dept.](https://sites.google.com/site/elandahl/)
 
 ## Run benchmark
-The main program to run is TXRD_Driver_example.m
-Set model = 'benchmark' on Line 15 to run comparisson to GID.
-The actual strain profile is specified in TRXD.m, lines 169-178.
-Details on the benchmarking and simple results are found in /benchmarks folder.
+Wie_Adapt_Test.m will compare a simple strained crystal to a GID result
 
 ## For help
 In MatLab or Octave type `help filename`
 
-## Update 1/19/2017
-Works for GaAs, Si, InSb, Ge, [004] reflection only, 7-15 keV
+## Update 1/9/2017
+Reorganized into folders.
+Getting ready to widely distribute.
 
 ## To Do List
 - [x] Fix incompatibilities with standard MatLAB functions
-- [x] Handle a few simple bulk crystals over a reasonable energy range (7 - 15 keV)
+- [ ] Handle a few simple bulk crystals over a reasonable energy range (7 - 15 keV)
 *  GaAs
 *  Si
 *  InSb
 *  Ge
-- [x]  Develop an easy to use driver to TRXD calling various strain functions
+- [ ]  Develop an easy to use driver to TRXD calling various strain functions
 - [ ] Transverse and shear strain, benchmarked to GID
 
 ## Develop simple strain functions

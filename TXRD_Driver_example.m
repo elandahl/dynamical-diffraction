@@ -2,6 +2,7 @@
 % General TRXD master program.  Use this program as a model.
 % By Eric Landahl, 1.9.2017
 % Updated to add benchmarking 1.16.2017
+% Improved accuracy by fixing delta and final step interpolation 1/19/2017
 
 clear all; tic; more off;
 
