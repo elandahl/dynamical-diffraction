@@ -83,8 +83,8 @@ cond3b = (y >= q2);
 cond3 = cond3a .* cond3b;  % logical AND
 cond4 = (y > q1);
 % Finally multiply each condition by the appropriate calculation and add all arrays
-s = cond1.*(s1 + 1i*s2) + cond2.*(s2 + 1i*s1) - cond3.*(-s2 + 1i*s1) + cond4.*(-s1 + 1i*s2);
-% Note above changed sign in front of cond3 to minus
+s = cond1.*(s1 + 1i*s2) - cond2.*(s2 + 1i*s1) - cond3.*(-s2 + 1i*s1) + cond4.*(-s1 + 1i*s2);
+% Note above changed sign in front of cond3 and cond2 to minus
 % Continue to calculate X_out for all angles
 B = -(1+1i*k);
 C = y + 1i*g;

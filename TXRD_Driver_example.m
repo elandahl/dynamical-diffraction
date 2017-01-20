@@ -34,19 +34,23 @@ elseif strcmp(model,'benchmark')
   benchmark = load('benchmark.txt');
   Int_BM = benchmark(:,2);
   Ang_BM = benchmark(:,1);
-  figure(20);clf;hold on;
-    plot(Ang_BM,Int_BM,':r','LineWidth',3)
-    plot(angles*180/pi, A,'ob')
+  figure(20);clf;hold all;
     plot(angles*180/pi, A0,'-k')
+    plot(angles*180/pi, A,'ob')
+    plot(Ang_BM,Int_BM,'r','LineWidth',4)
     xlabel('Theta (degrees)')
     ylabel('Diffracted Intensity')
+    legend(['Unstrained';'TRXD';'GID'])
+    title([num2str(crystal) ' @ ' num2str(energy) ' keV,  ' num2str(reflection) ' and uniform strain of 1E-4, 1 um deep'])
   hold off;
-  figure(21);clf;hold on;
-    semilogy(Ang_BM,Int_BM,':r','LineWidth',3)
-    semilogy(angles*180/pi, A,'ob')
+  figure(21);clf;hold all;
     semilogy(angles*180/pi, A0,'-k')
+    semilogy(angles*180/pi, A,'ob')
+    semilogy(Ang_BM,Int_BM,'r','LineWidth',4)
     xlabel('Theta (degrees)')
     ylabel('Diffracted Intensity')
+    legend(['Unstrained';'TRXD';'GID'])
+    title([num2str(crystal) ' @ ' num2str(energy) ' keV,  ' num2str(reflection) ' and uniform strain of 1E-4, 1 um deep'])
   hold off;
 
 end
