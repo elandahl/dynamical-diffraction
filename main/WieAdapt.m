@@ -9,6 +9,7 @@
 % Revised by EL 1/9/17 to also output unstrained scattering X0
 % Last revised by EL 1/16/17 to improve convergence at high strain
 % Improved accuracy by fixing delta and final step interpolation 1/19/2017
+% Improved accuracy by using Wie0.m function for unstrained solution 1/20/2017
 % For more details see help for Wiestep.m
 %
 % REQUIRES THESE FUNCTIONS:
@@ -115,7 +116,7 @@ while (zz>=0);
     X_in = X_full; % Average full and two half-step results
     zz = zz - dz; % Move to shorter depth (closer to the surface)
   elseif (errs>tol) && (dz>dz_min) % If the error is large then
-    dz = dz/(5*f); % shrink dz (don't record X, instead repeat)
+    dz = dz/(10*f); % shrink dz (don't record X, instead repeat)
   end  
 
 % Optional plots to watch the algorithim work
@@ -164,9 +165,9 @@ end
 %% Return values
 f1 = zz_old/(zz_old-zz); % Correction factor for final depth step
 X =( f1*X_half + (1-f1)*X_full); % Correct final step
-X = X/max(X.*conj(X)); % Normalize
 err = max_errs; % return maximum error
 Steps = i-1; % return number of steps
+X0 = Wie0(theta,params);
 
 % Optional plots (after algorithm)
 %    figure(20);clf; hold on;

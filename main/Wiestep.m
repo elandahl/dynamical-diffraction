@@ -8,7 +8,8 @@
 % suggestion to vectorize angle thanks to Dohn Arms
 % Based on Wie.m by G. Jackson Williams 8/28/2009 and also his later cWie.c
 % Written by Eric Landahl, 11/1/2016 
-% Last revised by EL 12/7/16 to make compatible with standard MATLAB syntax
+% Revised by EL 12/7/16 to make compatible with standard MATLAB syntax
+% Revised by EL 1/20/17 to fix sign of s in cond3 to agree with GID
 
 function [X_out] = Wiestep (X_in, theta, z, dz, strain, param)
 
@@ -50,7 +51,7 @@ b = abs(gamma_0/gamma_H);
 g = ((1+b)*psi_0i)/(2*abs(psi_Hr)*sqrt(b));
 k = psi_Hi/psi_Hr;
 Lext = lambda*sqrt(abs(gamma_H)*gamma_0)/(pi*abs(psi_Hr));
-A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt(abs(gamma_H*gamma_0))); % Normalizing the crystal thuckness
+%A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt(abs(gamma_H*gamma_0))); % Normalizing the crystal thuckness
 
 %% Calculations that depend on depth and strain, but not angle
 A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt(abs(gamma_H*gamma_0))); % Normalizing the crystal thuckness
@@ -64,26 +65,26 @@ c2 = 2*sin(2*thetaB)*((sin(phi)^2)*tan(thetaB) - sin(phi)*cos(phi)); % from Erra
 alpha = -2*(theta - thetaB)*sin(2*thetaB) - (c1*strain(1) + c2*strain(2));
 y = ((1+b)*psi_0r - b*alpha)/(2*abs(psi_Hr)*sqrt(b));
 r1 = abs(y.^2 - g^2 + k^2 - 1);         % APPENDIX FROM WIE et al.
-r2 = 2*(y*g - k);                       % Taking the square root of a complex number
+r2 = 2*(y.*g - k);                       % Taking the square root of a complex number
 r  = sqrt(r1.^2 + r2.^2);               % s = sqrt(C^2 - B^2)
-s1 = sqrt((r+r1)/2);
+s1 = sqrt((r+r1)/2); % typo as s2 in WIE et al.  
 s2 = sqrt((r-r1)/2);
 q1 = sqrt(1 - k^2 + g^2);
 q2 = k/g;
-r1 = abs(y.^2 - g^2 + k^2 - 1);          % APPENDIX FROM WIE et al.
 % Using boolean indexing to perform "if/else" statements on vectors
 % See: https://www.mathworks.com/matlabcentral/answers/129-how-does-logical-indexing-work
 % Start by making arrays of condition tests that return a 1 if condition is true
-cond1 = (y <= - q1);
+cond1 = (y < - q1);
 cond2a = (y <= q2);
 cond2b = (y >= -q1);
 cond2 = cond2a .* cond2b; % logical AND
 cond3a = (y <= q1);
 cond3b = (y >= q2);
 cond3 = cond3a .* cond3b;  % logical AND
-cond4 = (y >= q1);
+cond4 = (y > q1);
 % Finally multiply each condition by the appropriate calculation and add all arrays
-s = cond1.*(s1 + 1i*s2) + cond2.*(s2 + 1i*s1) + cond3.*(-s2 + 1i*s1) + cond4.*(-s1 + 1i*s2);
+s = cond1.*(s1 + 1i*s2) + cond2.*(s2 + 1i*s1) - cond3.*(-s2 + 1i*s1) + cond4.*(-s1 + 1i*s2);
+% Note above changed sign in front of cond3 to minus
 % Continue to calculate X_out for all angles
 B = -(1+1i*k);
 C = y + 1i*g;
@@ -93,5 +94,4 @@ if (max(abs(X_in))==0)
 else
   X_out = (s.*X_in + 1i*(B+C.*X_in).*tan(s.*(A - A01)))./(s - 1i*(C+B.*X_in).*tan(s.*(A - A01))); 
 end
-
 end

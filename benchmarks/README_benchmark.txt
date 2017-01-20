@@ -1,6 +1,6 @@
 README_benchmark
 
-Eric Landahl, 1/19/17 (revised)
+Eric Landahl, 1/20/17 (revised)
 
 benchmark.txt contains output of Sergey's GID, http://x-server.gmca.aps.anl.gov/cgi/www_form.exe?template=GID_sl_multilay_simplified.htm&method=post
 

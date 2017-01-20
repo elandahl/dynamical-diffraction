@@ -3,8 +3,9 @@
 % By Eric Landahl, DePaul University Physics Department, elandahl@depaul.edu
 % First written December 13, 2016
 % Revised by EL 1.9.2017 to add unstrained amplitude output
-% Last revised by EL 1.16.17 to handle benchmarking to Sergey's GID
+% Revised by EL 1.16.17 to handle benchmarking to Sergey's GID
 % Improved accuracy by fixing delta and final step interpolation 1/19/2017
+% Corrected signs on p_0i, p_0r, p_Hi, p_Hr to work with X0h database 1/20/17
 % Based on previous work by Sooheyong Lee (KRISS) and G. Jackson Williams (LLNL)
 %
 % INPUTS:
@@ -48,7 +49,7 @@ addpath('main','include','strain_functions','data');
 
 %% Some constants that can be changed to speed things up when using defaults
 num_times = 20;
-num_angles = 100;
+num_angles = 400;
 time_f = 5e-7; % in seconds
 angle_width = 2e-2; % in degrees
 
@@ -108,10 +109,10 @@ end
 
 % Interpolate X0h data
 % Note that X0h(:,1) are the energies in keV
-p_0r = -abs(interp1(X0h(:,1), X0h(:,2), energy, 'spline', 'extrap'));   
-p_0i = -abs(interp1(X0h(:,1), X0h(:,3), energy, 'spline', 'extrap'));   
+p_0r = -abs(interp1(X0h(:,1), X0h(:,2), energy, 'spline', 'extrap'));
+p_0i = abs(interp1(X0h(:,1), X0h(:,3), energy, 'spline', 'extrap')); 
 p_Hr = -abs(interp1(X0h(:,1), X0h(:,4), energy, 'spline', 'extrap'));   
-p_Hi = -abs(interp1(X0h(:,1), X0h(:,5), energy, 'spline', 'extrap'));   
+p_Hi = abs(interp1(X0h(:,1), X0h(:,5), energy, 'spline', 'extrap'));   
 delta = interp1(X0h(:,1), X0h(:,6), energy, 'spline', 'extrap');   
 tB_deg = interp1(X0h(:,1), X0h(:,7), energy, 'spline', 'extrap'); 
 thetaB= tB_deg*3.14159/180;  % Sergey Si, Bragg angle in radians
@@ -175,7 +176,7 @@ elseif strcmp(model,'benchmark')
   transverse = 0.*z; % no transverse strain
   sheer = 0.*z; % no sheer strain
   longitudinal = 0.*z;
-  longitudinal = 1e-4 * (z<=1e-6); % Simple strain model 
+  longitudinal =1e-4 * (z<=1e-6); % Simple strain model 
 else
   fprintf('Not a valid model\n')
   return

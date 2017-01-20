@@ -36,14 +36,14 @@ elseif strcmp(model,'benchmark')
   Ang_BM = benchmark(:,1);
   figure(20);clf;hold on;
     plot(Ang_BM,Int_BM,':r','LineWidth',3)
-    plot(angles*180/pi, A,'-b')
+    plot(angles*180/pi, A,'ob')
     plot(angles*180/pi, A0,'-k')
     xlabel('Theta (degrees)')
     ylabel('Diffracted Intensity')
   hold off;
   figure(21);clf;hold on;
     semilogy(Ang_BM,Int_BM,':r','LineWidth',3)
-    semilogy(angles*180/pi, A,'-b')
+    semilogy(angles*180/pi, A,'ob')
     semilogy(angles*180/pi, A0,'-k')
     xlabel('Theta (degrees)')
     ylabel('Diffracted Intensity')
