@@ -1,6 +1,7 @@
 % TRXD_plots.m
 % Produces plots of strain components and rocking curves
 % May be called from either within of after TRXD.m
+% By E.L.  Last revised 1/23/17 to workaround semilogy and MatLAB bug
 
 
 function [Intensity centroid FWHM] = TRXD_plots (A,A0,time,angle,Strain,z,ang_res,plot_opts)
@@ -62,6 +63,7 @@ for i = 1:length(time)
     title([ num2str(time(i)) ' ns']);
     xlabel('Angle (deg)');
     ylabel('Diffraction Intensity')
+    set(gca,'YScale','log')
   hold off; 
   
   figure(3)
@@ -173,11 +175,13 @@ subplot(2,2,4);hold all;
 for j = 1:6
 ti = ii(j);
 semilogy(angle,Intensity(ii(j),:))
+set(gca,'YScale','log')
 end
 xlabel('Angle (mdeg)')
 ylabel('X-ray Intensity')
 ylim([1e-4 1.1])
 xlim([-6 9])
+set(gca,'YScale','log')
 
 
 ti=1;
@@ -188,7 +192,7 @@ lgd=cellstr(lgd);
 LEG=legend(lgd);
 %set(gca, 'FontSize', 16)
 set(LEG,'FontSize',8)
-
+set(gca,'YScale','log')
 
   end
   

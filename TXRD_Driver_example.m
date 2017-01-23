@@ -51,6 +51,7 @@ elseif strcmp(model,'benchmark')
     ylabel('Diffracted Intensity')
     legend('Unstrained','TRXD','GID')
     title([num2str(crystal) ' @ ' num2str(energy) ' keV,  ' num2str(reflection) ' and uniform strain of 1E-4, 1 um deep'])
+    set(gca,'YScale','log')
   hold off;
 
 end
