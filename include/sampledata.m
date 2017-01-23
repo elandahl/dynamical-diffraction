@@ -29,7 +29,7 @@
 %end
 
 
-clear all;
+clear sample;
 
 
 % Silicon
@@ -404,7 +404,7 @@ sample(4).name = 'InSb';
   sample(4).soundTransverse.var = 'v_T';
   sample(4).soundTransverse.ref = 'ioffe';
 
-save sample.dat sample
+%save sample.dat sample
 
 
 

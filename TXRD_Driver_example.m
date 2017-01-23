@@ -10,7 +10,7 @@ clear all; tic; more off;
 addpath('main','include','strain_functions','data','benchmarks');
 
 %% Genreate fresh sample material properties data file
-%sampledata; % creates file sample.dat database of material properties
+sampledata; % creates file sample.dat database of material properties
 %% Calculate TRXD for Si
 model = 'thermalFilm';
 crystal = 'GaAs';

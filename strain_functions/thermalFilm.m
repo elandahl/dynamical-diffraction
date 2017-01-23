@@ -56,7 +56,7 @@ function [longitudinal trans sheer time_out z]=thermalFilm(crystal,fluence,time_
   alpha1 = 8.418E-5; % Film thermal diffusivity in m^2/s
   
 % Load substrate properties.  "2" referes to the substrate
-  load sample.dat; 
+  sampledata
   ID = find(strcmp({sample.name}, crystal)==1);
   alpha_t = sample(ID).thermalExpansion.val; % 1/K
   alpha2 = sample(ID).thermalDiffusion.val; % cm^2/s
