@@ -167,7 +167,7 @@ f1 = zz_old/(zz_old-zz); % Correction factor for final depth step
 X =( f1*X_half + (1-f1)*X_full); % Correct final step
 err = max_errs; % return maximum error
 Steps = i-1; % return number of steps
-X0 = Wie0(theta,params);
+%X0 = Wie0(theta,params);
 
 % Optional plots (after algorithm)
 %    figure(20);clf; hold on;

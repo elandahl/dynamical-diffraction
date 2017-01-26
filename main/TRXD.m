@@ -129,8 +129,8 @@ params(6) = lambda;
 % Assemble opts array containing options for adaptative depth stepping
 tol = 1e-4; % tolerance.  Higher value for more speed and less precision
 dz_min = 1.1e-10; % Minimum step size in meters
-dz_max = 1e-7; % Maximum step size in meters
-f = 2; %Shift factor for convergence
+dz_max = 1e-8; % Maximum step size in meters
+f = 5; %Shift factor for convergence
 
 opts(1) = tol;
 opts(2) = dz_min;
@@ -176,7 +176,7 @@ elseif strcmp(model,'benchmark')
   transverse = 0.*z; % no transverse strain
   sheer = 0.*z; % no sheer strain
   longitudinal = 0.*z;
-  longitudinal =1e-4 * (z<=1e-6); % Simple strain model 
+  longitudinal =1e-4 * (z<=2e-6); % Simple strain model 
 else
   fprintf('Not a valid model\n')
   return

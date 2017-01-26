@@ -12,7 +12,7 @@ addpath('main','include','strain_functions','data','benchmarks');
 %% Genreate fresh sample material properties data file
 sampledata; % creates file sample.dat database of material properties
 %% Calculate TRXD for Si
-model = 'thermalFilm';
+model = 'benchmark';
 crystal = 'GaAs';
 reflection = [0 0 4];
 cut = [0 0 1];
@@ -41,7 +41,7 @@ elseif strcmp(model,'benchmark')
     xlabel('Theta (degrees)')
     ylabel('Diffracted Intensity')
     legend('Unstrained','TRXD','GID')
-    title([num2str(crystal) ' @ ' num2str(energy) ' keV,  ' num2str(reflection) ' and uniform strain of 1E-4, 1 um deep'])
+    title([num2str(crystal) ' @ ' num2str(energy) ' keV,  ' num2str(reflection) ' and uniform strain of 1E-4, 2 um deep'])
   hold off;
   figure(21);clf;hold all;
     semilogy(angles*180/pi, A0,'-k')
@@ -50,7 +50,7 @@ elseif strcmp(model,'benchmark')
     xlabel('Theta (degrees)')
     ylabel('Diffracted Intensity')
     legend('Unstrained','TRXD','GID')
-    title([num2str(crystal) ' @ ' num2str(energy) ' keV,  ' num2str(reflection) ' and uniform strain of 1E-4, 1 um deep'])
+    title([num2str(crystal) ' @ ' num2str(energy) ' keV,  ' num2str(reflection) ' and uniform strain of 1E-4, 2 um deep'])
     set(gca,'YScale','log')
   hold off;
 

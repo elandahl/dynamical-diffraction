@@ -54,8 +54,8 @@ Lext = lambda*sqrt(abs(gamma_H)*gamma_0)/(pi*abs(psi_Hr));
 %A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt(abs(gamma_H*gamma_0))); % Normalizing the crystal thuckness
 
 %% Calculations that depend on depth and strain, but not angle
-A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt(abs(gamma_H*gamma_0))); % Normalizing the crystal thuckness
-A = (pi*z*abs(psi_Hr))/(lambda*sqrt(abs(gamma_H*gamma_0))); % Normalizing iterative crystal depth
+A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt((gamma_H*gamma_0))); % Normalizing the crystal thuckness
+A = (pi*z*abs(psi_Hr))/(lambda*sqrt((gamma_H*gamma_0))); % Normalizing iterative crystal depth
 
 %% Calculations that have an angular dependence
 %c1 = (cos(phi)^2)*tan(thetaB) + sin(phi)*cos(phi);
@@ -86,11 +86,20 @@ cond4 = (y > q1);
 s = cond1.*(s1 + 1i*s2) - cond2.*(s2 + 1i*s1) - cond3.*(-s2 + 1i*s1) + cond4.*(-s1 + 1i*s2);
 % Note above changed sign in front of cond3 and cond2 to minus
 % Continue to calculate X_out for all angles
+               % Zero-strain solution
 B = -(1+1i*k);
 C = y + 1i*g;
-X0 = -B./(C - s);                    % Zero-strain solution
 if (max(abs(X_in))==0)
-  X_out = X0; % Return zero strain solution if the input X array is zero
+  xc = -C./B;
+  cond01 = (real(xc)>1);
+  cond02 = (abs(real(xc))<=1);
+  cond03 = (real(xc)<-1);
+  X1 = cond01.*(xc-sqrt(xc.^2 -1));
+  X2 = cond02.*(xc-1i*sqrt(1-xc.^2));
+  X3 = cond03.*(xc+sqrt(xc.^2 -1));
+  X_out = X1 + X2  + X3; 
+  %X0 = -B./(C - s);     
+  %X_out = X0; % Return zero strain solution if the input X array is zero
 else
   X_out = (s.*X_in + 1i*(B+C.*X_in).*tan(s.*(A - A01)))./(s - 1i*(C+B.*X_in).*tan(s.*(A - A01))); 
 end
