@@ -115,8 +115,8 @@ p_Hr = -abs(interp1(X0h(:,1), X0h(:,4), energy, 'spline', 'extrap'));
 p_Hi = abs(interp1(X0h(:,1), X0h(:,5), energy, 'spline', 'extrap'));   
 delta = interp1(X0h(:,1), X0h(:,6), energy, 'spline', 'extrap');   
 tB_deg = interp1(X0h(:,1), X0h(:,7), energy, 'spline', 'extrap'); 
-thetaB= tB_deg*3.14159/180;  % Sergey Si, Bragg angle in radians
-lambda= energy*1.23984E-11; % convert energy in keV to wavelength in meters
+thetaB= tB_deg*pi/180;  % Sergey Si, Bragg angle in radians
+lambda= energy*1.23984193E-11; % convert energy in keV to wavelength in meters
 
 % Assemble params arrray containing parameters for the crystal diffraction
 params(1) = p_0r + 1i*p_0i;
@@ -128,8 +128,8 @@ params(6) = lambda;
 
 % Assemble opts array containing options for adaptative depth stepping
 tol = 1e-4; % tolerance.  Higher value for more speed and less precision
-dz_min = 1.1e-10; % Minimum step size in meters
-dz_max = 1e-8; % Maximum step size in meters
+dz_min = 1e-10; % Minimum step size in meters
+dz_max = 1.1e-8; % Maximum step size in meters
 f = 5; %Shift factor for convergence
 
 opts(1) = tol;
@@ -203,7 +203,7 @@ for m = 1: length(time)
 end
 
 if strcmp(model,'benchmark')
-  angle = angle - delta/2;
+  % Keep angle in absolute radians
 else
-  angle = (angle-thetaB-delta/2)*180/pi; % Convert angle back to degrees relative to Bragg
+  angle = (angle-thetaB)*180/pi; % Convert angle back to degrees relative to Bragg
 end

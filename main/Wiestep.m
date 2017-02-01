@@ -50,12 +50,16 @@ gamma_H = sin(thetaB-phi);  % Eventually need to add Chi angle
 b = abs(gamma_0/gamma_H);
 g = ((1+b)*psi_0i)/(2*abs(psi_Hr)*sqrt(b));
 k = psi_Hi/psi_Hr;
-Lext = lambda*sqrt(abs(gamma_H)*gamma_0)/(pi*abs(psi_Hr));
+%Lext = lambda*sqrt(abs(gamma_H)*gamma_0)/(pi*abs(psi_Hr));
 %A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt(abs(gamma_H*gamma_0))); % Normalizing the crystal thuckness
 
 %% Calculations that depend on depth and strain, but not angle
-A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt((gamma_H*gamma_0))); % Normalizing the crystal thuckness
-A = (pi*z*abs(psi_Hr))/(lambda*sqrt((gamma_H*gamma_0))); % Normalizing iterative crystal depth
+%A01 = (z-dz)*(pi*abs(psi_Hr))/(lambda*sqrt((gamma_H*gamma_0))); % Normalizing the crystal thuckness
+%A = (pi*z*abs(psi_Hr))/(lambda*sqrt((gamma_H*gamma_0))); % Normalizing iterative crystal depth
+%A01 = (z-dz)*(abs(psi_Hr))/(lambda*(0.98701-1.02086*cos(thetaB)));
+%A = (z*abs(psi_Hr))/(lambda*(0.98701-1.02086*cos(thetaB))); 
+A01 = (z-dz)*pi*(abs(psi_Hr))/(lambda*(-6.4142*cos(thetaB)+6.2015));
+A = (pi*z*abs(psi_Hr))/(lambda*(-6.4142*cos(thetaB)+6.2015)); 
 
 %% Calculations that have an angular dependence
 %c1 = (cos(phi)^2)*tan(thetaB) + sin(phi)*cos(phi);
