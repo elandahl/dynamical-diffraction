@@ -164,9 +164,19 @@ angle = thetaB + angle*pi/180; % Convert angle to radians and add Bragg Angle
 if strcmp(model,'thermalFilm')
   [longitudinal transverse sheer time_out z] = thermalFilm (crystal, fluence, time, 5.1*Lext);
 elseif strcmp(model,'strainFile')
-  filename = fluence;
-  dz = 10e-9; % depth step in meters
-  [longitudinal transverse sheer time_out z] = strainFile (filename, dz, dt);
+  z = load('depth_file.txt');
+  time_out = load('time_file.txt');
+  longitudinal = load('strain_file.txt');
+  transverse = 0*longitudinal;
+  sheer = 0*longitudinal;
+elseif strcmp(model,'strainFile1D') % strains just at one time
+  z = load('depth_file.txt');
+  time_out = 1; % No time specified, just strain at one time
+  all_strain = load('strain_file.txt');
+  longitudinal = all_strain(floor(fluence),:); % load only one column
+  transverse = 0*longitudinal;
+  sheer = 0*longitudinal;
+  time=time_out;
 elseif strcmp(model,'benchmark')
   clear time;
   time = 1;
@@ -186,6 +196,7 @@ end
  % Otherwise seems to work 12/28/16 EL
  
 for m = 1: length(time)
+  time_out(m)
   if time(m) == time_out(m) % if the time doesn't need to be remeshed
    st1(m,:) = longitudinal(m,:);
    st2(m,:) = transverse(m,:);

@@ -12,24 +12,18 @@ addpath('main','include','strain_functions','data','benchmarks');
 %% Genreate fresh sample material properties data file
 sampledata; % creates file sample.dat database of material properties
 %% Calculate TRXD for Si
-model = 'benchmark';
+model = 'strainFile1D';
 crystal = 'GaAs';
 reflection = [0 0 4];
 cut = [0 0 1];
 energy = 10; % in keV
-fluence = 1; % in mJ/cm^2
+fluence = 100; % in mJ/cm^2, or the timepoint for strainFile1D
 angles = 0; % deg. relative, use 0 for default angles
-times = logspace(-3,3,30)*1e-9; % in seconds; use 0 for default times
+times = logspace(-3,3,30)*1e-9; % in seconds; use 0 for default times, overridden for external files
 fprintf('Starting TRXD calculation.\n')
 [A A0 times angles Strain z] = TRXD (model, crystal, reflection, cut, energy, fluence, angles, times);
 toc;
-%% Make plots, smooth data, calculate centroids
-if ~strcmp(model,'benchmark') % Unless model is 'benchmark'
-  fprintf('TRXD calculation done, preparing plots.\n')
-  plot_opts = 'final'; % 'none' = no plots
-  ang_res = 2e-4; % angular resultion in degrees FWHM
-  [Intensity centroid FWHM] = TRXD_plots (A,A0,times,angles,Strain,z,ang_res,plot_opts);
-elseif strcmp(model,'benchmark')
+if strcmp(model,'benchmark')
   % Loach benchmark data
   benchmark = load('benchmark.txt');
   Int_BM = benchmark(:,2);
@@ -53,6 +47,27 @@ elseif strcmp(model,'benchmark')
     title([num2str(crystal) ' @ ' num2str(energy) ' keV,  ' num2str(reflection) ' and uniform strain of 1E-4, 2 um deep'])
     set(gca,'YScale','log')
   hold off;
+elseif strcmp(model,'strainFile1D')
+  figure(30);clf; hold on;
+    plot(angles*180/pi, A, '-b')
+    xlabel('Angle (deg)')
+    ylabel('Intensity')
+    plot(angles*180/pi, A0, '-k')
+    legend('Strained','Unstrained')
+  hold off;
+  figure(31);clf; hold on;
+    semilogy(angles*180/pi, A, '-b')
+    xlabel('Angle (deg)')
+    ylabel('Intensity')
+    semilogy(angles*180/pi, A0, '-k')
+    legend('Strained','Unstrained')
+  hold off;
+%% Make plots, smooth data, calculate centroids
+else  % Unless model is 'benchmark'
+  fprintf('TRXD calculation done, preparing plots.\n')
+  plot_opts = 'final'; % 'none' = no plots
+  ang_res = 2e-4; % angular resultion in degrees FWHM
+  [Intensity centroid FWHM] = TRXD_plots (A,A0,times,angles,Strain,z,ang_res,plot_opts);
 
 end
 
