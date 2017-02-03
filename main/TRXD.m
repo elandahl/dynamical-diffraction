@@ -171,7 +171,8 @@ elseif strcmp(model,'strainFile')
   sheer = 0*longitudinal;
 elseif strcmp(model,'strainFile1D') % strains just at one time
   z = load('depth_file.txt');
-  time_out = 1; % No time specified, just strain at one time
+  time_file = load('time_file.txt');
+  time_out = time_file(fluence); % No time specified, just strain at one time
   all_strain = load('strain_file.txt');
   longitudinal = all_strain(floor(fluence),:); % load only one column
   transverse = 0*longitudinal;
@@ -196,7 +197,7 @@ end
  % Otherwise seems to work 12/28/16 EL
  
 for m = 1: length(time)
-  time_out(m)
+  fprintf('Evaluating rocking curve at %e s.\n',time_out(m))
   if time(m) == time_out(m) % if the time doesn't need to be remeshed
    st1(m,:) = longitudinal(m,:);
    st2(m,:) = transverse(m,:);
@@ -216,5 +217,5 @@ end
 if strcmp(model,'benchmark')
   % Keep angle in absolute radians
 else
-  angle = (angle-thetaB)*180/pi; % Convert angle back to degrees relative to Bragg
+  angle = (angle)*180/pi; % Convert angle back to degrees relative to Bragg
 end

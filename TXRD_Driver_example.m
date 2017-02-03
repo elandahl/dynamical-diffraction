@@ -17,7 +17,7 @@ crystal = 'GaAs';
 reflection = [0 0 4];
 cut = [0 0 1];
 energy = 10; % in keV
-fluence = 100; % in mJ/cm^2, or the timepoint for strainFile1D
+fluence = 500; % in mJ/cm^2, or the timepoint for strainFile1D
 angles = 0; % deg. relative, use 0 for default angles
 times = logspace(-3,3,30)*1e-9; % in seconds; use 0 for default times, overridden for external files
 fprintf('Starting TRXD calculation.\n')
@@ -49,19 +49,32 @@ if strcmp(model,'benchmark')
   hold off;
 elseif strcmp(model,'strainFile1D')
   figure(30);clf; hold on;
-    plot(angles*180/pi, A, '-b')
+    plot(angles, A, '-b')
     xlabel('Angle (deg)')
     ylabel('Intensity')
-    plot(angles*180/pi, A0, '-k')
+    plot(angles, A0, '-k')
     legend('Strained','Unstrained')
+    xlim([angles(floor(end/4)) angles(floor(3*end/4))])
+    title([num2str(times*1e9) ' ns'])
   hold off;
   figure(31);clf; hold on;
-    semilogy(angles*180/pi, A, '-b')
+    semilogy(angles, A, '-b')
     xlabel('Angle (deg)')
     ylabel('Intensity')
-    semilogy(angles*180/pi, A0, '-k')
+    semilogy(angles, A0, '-k')
     legend('Strained','Unstrained')
+    title([num2str(times*1e9) ' ns'])
   hold off;
+  figure(32);clf;hold on;
+    plot(z*1e6,Strain(1,:,1));
+    xlabel('Depth (um)')
+    ylabel('Strain')
+    title([num2str(times*1e9) ' ns'])
+  hold off;
+  dtheta =  sum(A.*angles)/sum(A) - sum(A0.*angles)/sum(A0); % in degrees
+  strain_est = -(pi/180)*dtheta*cot(max(angles)*pi/180);
+  fprintf('The centroid shift is %.3f mdeg or %.1e radians.\n',dtheta*1000,dtheta*pi/180)
+  fprintf('For %s %d %d %d at %.1f keV the estimated average strain is %.1e .\n',crystal,reflection,energy,strain_est)
 %% Make plots, smooth data, calculate centroids
 else  % Unless model is 'benchmark'
   fprintf('TRXD calculation done, preparing plots.\n')

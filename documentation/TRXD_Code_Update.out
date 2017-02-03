@@ -1,0 +1,11 @@
+\BOOKMARK [1][-]{section.1}{About this document}{}% 1
+\BOOKMARK [1][-]{section.2}{Purpose of the Codes}{}% 2
+\BOOKMARK [1][-]{section.3}{Dynamical diffraction calculations: Issues with implementation of the Wie et al. algorithm}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Substrate boundary condition}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Depth step size}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Ambiguity in sign of the square root of an imaginary number}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{Normalized depth}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{User's Manual}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{Benchmarking against Sergey Stepanov's GID-SL diffraction calculations}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.2}{Testing using an external strain file provided by SHL}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.3}{Thermal film model}{section.4}% 11
