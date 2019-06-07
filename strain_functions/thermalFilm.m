@@ -39,21 +39,33 @@
 %
 %% TYPICAL USAGE
 % 
-% [st1 st2 st3 time_out z] = thermalFilm ('Si', 1, (1e-10:2e-10:1e-8), 1e-5);
+% [st1 st2 st3 time_out z] = thermalFilm ('Al', 'Si', 1, (1e-10:2e-10:1e-8), 1e-5);
 %
-function [longitudinal trans sheer time_out z]=thermalFilm(crystal,fluence,time_in,max_depth)
+function [longitudinal, trans, sheer, time_out, z]=thermalFilm(film, crystal,fluence,time_in,max_depth)
 
 % Remesh time
   time = time_in; 
   % In this simple model, there is no penalty for calculating many timepoints
   % so the given array of timepoints is used. 
 
-% Aluminum film properties.  "1" refers to the film
+% film properties.  "1" refers to the film
   L = 70e-9; % Film thickness in m
+  
+% Aluminum 
+  if film=='Al'
   C1 = 904; %Specific heat of film in J/(kg K)
   rho1 = 2712; % Film density in kg/m^3
   k1 = 204; % Film thermal conductivity in W/(m K)
   alpha1 = 8.418E-5; % Film thermal diffusivity in m^2/s
+  end
+ 
+% Gold
+  if film=='Au'
+  C1 = 125.604; %Specific heat of film in J/(kg K)
+  rho1 = 19300; % Film density in kg/m^3
+  k1 = 314; % Film thermal conductivity in W/(m K)
+  alpha1 = 1.27E-4; % Film thermal diffusivity in m^2/s
+  end
   
 % Load substrate properties.  "2" referes to the substrate
   sampledata
@@ -77,8 +89,12 @@ function [longitudinal trans sheer time_out z]=thermalFilm(crystal,fluence,time_
 % Calculate initial temperature rise
   fluence = fluence*10; % Convert from mJ/cm^2 to J/m^2
   T0 = fluence/(L * C1 * rho1); % Initial temperature rise in film
+  if film=='Al'
   fprintf('A %d nm thick Aluminum film gives a temperature rise of %.1f K.\n',L*1e9,T0)
-  
+  end 
+  if film=='Au'
+  fprintf('A %d nm thick Gold film gives a temperature rise of %.1f K.\n',L*1e9,T0)
+  end 
 % Unitless parameters (see Hahn, "Thermal Conductivity", Eqs. 10-135 and 10-138)  
   mu = sqrt(alpha1/alpha2);
   beta = (k1/k2)/mu;
@@ -90,7 +106,7 @@ function [longitudinal trans sheer time_out z]=thermalFilm(crystal,fluence,time_
   z = dz:dz:max_depth;
   
 % Meshgrid for calculation speed & ease
-  [Time Z] = meshgrid(time,z); % Time and Z are 2D, time and z are 1D
+  [Time, Z] = meshgrid(time,z); % Time and Z are 2D, time and z are 1D
 
 % Calculate temperature profile in bulk
   max_n = 100; % number of terms in series expansion, default 100
@@ -106,7 +122,7 @@ function [longitudinal trans sheer time_out z]=thermalFilm(crystal,fluence,time_
 % Calculate temperature profile in film.  zz and ZZ are the film depths
   dzz = L/100; % Choose 100 depth points in the film by default  
   zz = dzz:dzz:L;
-  [Time ZZ] = meshgrid(time,zz); 
+  [Time, ZZ] = meshgrid(time,zz); 
   T1a = 0.*Time.*ZZ;
   for n = 0:max_n
     T1b = erfc(((2*n + 1)*L - ZZ)./(2*sqrt(alpha1*Time)));
@@ -137,7 +153,12 @@ function [longitudinal trans sheer time_out z]=thermalFilm(crystal,fluence,time_
 % Outputs not needed for TRXD
 
 save thermalFilmOut.m; % Save all variables for future use
-  
+for i=10:10:50
+    %plot(z,longitudinal(i,:))
+    plot(z,T2(:,i),'DisplayName',strcat(num2str(time_out(i)),' s'))
+    xlabel('Depth(m)')
+    ylabel('Temperature(C)')
+    legend('show')
+    hold on
+end
   end
-  
-  
