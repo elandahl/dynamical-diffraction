@@ -67,6 +67,13 @@ function [longitudinal, trans, sheer, time_out, z]=thermalFilm(film, crystal,flu
   alpha1 = 1.27E-4; % Film thermal diffusivity in m^2/s
   end
   
+% Silver
+  if film=='Ag'
+  C1 = 235; % Specific heat of film in J/(kg K)
+  rho1 = 10490; % Film density in kg/m^3
+  k1 = 429; % Film thermal conductivity in W/(m K)
+  alpha1 = 1.74e-4; % Film thermal diffusivity in m^2/s
+  
 % Load substrate properties.  "2" referes to the substrate
   sampledata
   ID = find(strcmp({sample.name}, crystal)==1);
@@ -95,6 +102,9 @@ function [longitudinal, trans, sheer, time_out, z]=thermalFilm(film, crystal,flu
   if film=='Au'
   fprintf('A %d nm thick Gold film gives a temperature rise of %.1f K.\n',L*1e9,T0)
   end 
+  if film=='Ag'
+  fprintf('A %d nm thick Silver film gives a temperature rise of %.1f K.\n',L*1e9,T0)
+  end
 % Unitless parameters (see Hahn, "Thermal Conductivity", Eqs. 10-135 and 10-138)  
   mu = sqrt(alpha1/alpha2);
   beta = (k1/k2)/mu;
