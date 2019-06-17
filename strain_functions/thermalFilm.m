@@ -27,6 +27,7 @@
 %   sheer           sheer strain, size = length(time_out) x length(z)
 %   z               a vector of depths in meters
 %   time_out        a vector of times returned in seconds, not the same as time_in
+%   L               thickness of the film
 %
 %% NOTE: The strain will be calculated out to time_in(end) however the time-steps
 %        are chosen for convenience and accuracy in evaluating the strain. 
@@ -41,15 +42,13 @@
 % 
 % [st1 st2 st3 time_out z] = thermalFilm ('Al', 'Si', 1, (1e-10:2e-10:1e-8), 1e-5);
 %
-function [longitudinal, trans, sheer, time_out, z]=thermalFilm(film, crystal,fluence,time_in,max_depth)
+function [longitudinal, trans, sheer, time_out, z]=thermalFilm(film, crystal,fluence,time_in,max_depth,L)
 
 % Remesh time
   time = time_in; 
   % In this simple model, there is no penalty for calculating many timepoints
   % so the given array of timepoints is used. 
 
-% film properties.  "1" refers to the film
-  L = 70e-9; % Film thickness in m
   
 % Aluminum 
   if film=='Al'
