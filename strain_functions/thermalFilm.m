@@ -73,6 +73,7 @@ function [longitudinal, trans, sheer, time_out, z]=thermalFilm(film, crystal,flu
   rho1 = 10490; % Film density in kg/m^3
   k1 = 429; % Film thermal conductivity in W/(m K)
   alpha1 = 1.74e-4; % Film thermal diffusivity in m^2/s
+  end
   
 % Load substrate properties.  "2" referes to the substrate
   sampledata
