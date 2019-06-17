@@ -114,6 +114,11 @@ function [longitudinal, trans, sheer, time_out, z]=thermalFilm(film, crystal,flu
   if film=='Ag'
   fprintf('A %d nm thick Silver film gives a temperature rise of %.1f K.\n',L*1e9,T0)
   end
+  if film=='Cr'
+  fprintf('A %d nm thick Chromium film gives a temperature rise of %.1f K.\n',L*1e9,T0)
+  end
+  
+  
 % Unitless parameters (see Hahn, "Thermal Conductivity", Eqs. 10-135 and 10-138)  
   mu = sqrt(alpha1/alpha2);
   beta = (k1/k2)/mu;
